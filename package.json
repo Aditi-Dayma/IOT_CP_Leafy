@@ -1,0 +1,24 @@
+{
+  "name": "leafy-smart-plant-dashboard",
+  "version": "1.0.0",
+  "description": "Leafy — Intelligent Plant Care & Automated Microclimate Control Dashboard for ESP32 IoT & MLOps",
+  "private": true,
+  "scripts": {
+    "dev": "npx -y serve . -l 3000",
+    "start": "npx -y serve . -l 3000",
+    "build": "echo \"Dashboard ready for static deployment on Vercel.\""
+  },
+  "keywords": [
+    "iot",
+    "esp32",
+    "microclimate",
+    "mlops",
+    "xgboost",
+    "smart-plant",
+    "dashboard",
+    "vercel"
+  ],
+  "author": "Leafy Team",
+  "license": "MIT"
+}
+

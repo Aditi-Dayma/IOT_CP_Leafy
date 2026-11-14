@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "on-tertiary-fixed-variant": "#653e00",
+          "on-tertiary": "#ffffff",
+          "on-primary-container": "#00422b",
+          "primary-container": "#10b981",
+          "background": "#faf8ff",
+          "secondary": "#006c4a",
+          "on-error-container": "#93000a",
+          "error": "#ba1a1a",
+          "tertiary": "#855300",
+          "surface-container-low": "#f2f3ff",
+          "on-tertiary-fixed": "#2a1700",
+          "on-background": "#131b2e",
+          "on-secondary-fixed": "#002114",
+          "inverse-on-surface": "#eef0ff",
+          "surface-container-lowest": "#ffffff",
+          "tertiary-fixed-dim": "#ffb95f",
+          "inverse-surface": "#283044",
+          "surface": "#faf8ff",
+          "on-secondary": "#ffffff",
+          "error-container": "#ffdad6",
+          "surface-bright": "#faf8ff",
+          "surface-container-high": "#e2e7ff",
+          "on-secondary-fixed-variant": "#005137",
+          "on-tertiary-container": "#523200",
+          "secondary-fixed-dim": "#68dba9",
+          "on-primary-fixed": "#002113",
+          "on-surface": "#131b2e",
+          "on-error": "#ffffff",
+          "surface-tint": "#006c49",
+          "secondary-fixed": "#85f8c4",
+          "primary": "#006c49",
+          "on-surface-variant": "#3c4a42",
+          "surface-container-highest": "#dae2fd",
+          "surface-dim": "#d2d9f4",
+          "primary-fixed": "#6ffbbe",
+          "on-primary": "#ffffff",
+          "primary-fixed-dim": "#4edea3",
+          "surface-variant": "#dae2fd",
+          "surface-container": "#eaedff",
+          "outline": "#6c7a71",
+          "on-primary-fixed-variant": "#005236",
+          "on-secondary-container": "#00714e",
+          "secondary-container": "#82f5c1",
+          "inverse-primary": "#4edea3",
+          "outline-variant": "#bbcabf",
+          "tertiary-fixed": "#ffddb8",
+          "tertiary-container": "#e29100"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "margin-mobile": "1rem",
+          "gutter-mobile": "1rem",
+          "space-xl": "2.5rem",
+          "margin": "2rem",
+          "space-lg": "1.5rem",
+          "space-xs": "0.25rem",
+          "space-md": "1rem",
+          "space-sm": "0.5rem",
+          "gutter": "1.5rem"
+        },
+        "fontFamily": {
+          "headline-lg": [
+            "Plus Jakarta Sans"
+          ],
+          "headline-sm": [
+            "Plus Jakarta Sans"
+          ],
+          "body-md": [
+            "Inter"
+          ],
+          "label-lg": [
+            "Inter"
+          ],
+          "headline-md": [
+            "Plus Jakarta Sans"
+          ],
+          "display-lg": [
+            "Plus Jakarta Sans"
+          ],
+          "label-md": [
+            "Inter"
+          ],
+          "headline-lg-mobile": [
+            "Plus Jakarta Sans"
+          ],
+          "label-sm": [
+            "Inter"
+          ],
+          "body-sm": [
+            "Inter"
+          ],
+          "body-lg": [
+            "Inter"
+          ]
+        },
+        "fontSize": {
+          "headline-lg": [
+            "2.25rem",
+            {
+              "lineHeight": "2.75rem",
+              "letterSpacing": "-0.02em",
+              "fontWeight": "600"
+            }
+          ],
+          "headline-sm": [
+            "1.125rem",
+            {
+              "lineHeight": "1.5rem",
+              "letterSpacing": "-0.01em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-md": [
+            "0.875rem",
+            {
+              "lineHeight": "1.25rem",
+              "fontWeight": "400"
+            }
+          ],
+          "label-lg": [
+            "0.875rem",
+            {
+              "lineHeight": "1.25rem",
+              "letterSpacing": "0.01em",
+              "fontWeight": "500"
+            }
+          ],
+          "headline-md": [
+            "1.5rem",
+            {
+              "lineHeight": "2rem",
+              "letterSpacing": "-0.015em",
+              "fontWeight": "600"
+            }
+          ],
+          "display-lg": [
+            "3rem",
+            {
+              "lineHeight": "3.5rem",
+              "letterSpacing": "-0.025em",
+              "fontWeight": "700"
+            }
+          ],
+          "label-md": [
+            "0.75rem",
+            {
+              "lineHeight": "1rem",
+              "letterSpacing": "0.02em",
+              "fontWeight": "600"
+            }
+          ],
+          "headline-lg-mobile": [
+            "1.75rem",
+            {
+              "lineHeight": "2.25rem",
+              "letterSpacing": "-0.015em",
+              "fontWeight": "600"
+            }
+          ],
+          "label-sm": [
+            "0.6875rem",
+            {
+              "lineHeight": "0.875rem",
+              "letterSpacing": "0.04em",
+              "fontWeight": "600"
+            }
+          ],
+          "body-sm": [
+            "0.75rem",
+            {
+              "lineHeight": "1rem",
+              "fontWeight": "400"
+            }
+          ],
+          "body-lg": [
+            "1rem",
+            {
+              "lineHeight": "1.5rem",
+              "fontWeight": "400"
+            }
+          ]
+        }
+      },
+    },
+  }</script>
+<style>
+  /* Nighttime Greenhouse Dark Mode Overrides */
+  .dark {
+    color-scheme: dark;
+  }
+  .dark body,
+  .dark main {
+    background-color: #090d16 !important;
+  }
+  .dark header {
+    background-color: rgba(9, 13, 22, 0.85) !important;
+    border-bottom: 1px solid #1e293b;
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  }
+  .dark footer {
+    background-color: #0b1120 !important;
+    border-top: 1px solid #1e293b;
+  }
+  .dark .bg-surface,
+  .dark .bg-surface-bright {
+    background-color: #090d16 !important;
+  }
+  .dark .bg-surface-container-lowest {
+    background-color: #111827 !important;
+    border: 1px solid #1e293b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  .dark .bg-surface-container-low {
+    background-color: #161f30 !important;
+  }
+  .dark .bg-surface-container {
+    background-color: #1e293b !important;
+  }
+  .dark .bg-surface-container-high {
+    background-color: #273549 !important;
+  }
+  .dark .bg-surface-container-highest {
+    background-color: #334155 !important;
+  }
+  .dark .text-on-surface {
+    color: #f8fafc !important;
+  }
+  .dark .text-on-surface-variant {
+    color: #94a3b8 !important;
+  }
+  .dark .text-primary {
+    color: #34d399 !important;
+  }
+  .dark .text-secondary {
+    color: #6ee7b7 !important;
+  }
+  .dark .text-tertiary {
+    color: #fbbf24 !important;
+  }
+  .dark .bg-secondary-container {
+    background-color: rgba(16, 185, 129, 0.2) !important;
+  }
+  .dark .text-on-secondary-container {
+    color: #6ee7b7 !important;
+  }
+  .dark .bg-tertiary-fixed {
+    background-color: rgba(245, 158, 11, 0.2) !important;
+  }
+  .dark .text-on-tertiary-fixed {
+    color: #fde68a !important;
+  }
+  .dark .bg-surface-container-low\/40 {
+    background-color: #0f172a !important;
+    border: 1px solid #1e293b;
+  }
+  .dark .divide-surface-container > * + * {
+    border-color: #1e293b !important;
+  }
+  .dark .hover\:bg-surface-container-low\/60:hover {
+    background-color: rgba(30, 41, 59, 0.6) !important;
+  }
+  .dark #chart-gridlines {
+    color: rgba(148, 163, 184, 0.2) !important;
+  }
+  .dark #chart-time-now {
+    fill: #f8fafc !important;
+  }
+  .dark #chart-time-predicted {
+    fill: #fbbf24 !important;
+  }
+</style>
+</head><body class="bg-surface font-body-md text-on-surface antialiased transition-colors duration-300"><header class="fixed top-0 left-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] transition-colors duration-300"><div class="h-20 w-full px-margin flex items-center justify-between gap-gutter"><div class="flex items-center gap-space-md min-w-0"><div class="flex flex-col"><div class="flex items-center gap-space-xs"><span class="font-headline-sm text-headline-sm text-primary flex items-center">🌿 Leafy</span><span class="px-space-sm py-space-xs rounded-full bg-secondary-container/50 text-on-secondary-container font-label-sm text-label-sm uppercase tracking-wider">Edge Node</span></div><p class="font-body-sm text-body-sm text-on-surface-variant truncate hidden sm:block">Intelligent Plant Care &amp; Automated Microclimate Control</p></div></div><div class="flex items-center gap-space-md"><div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-secondary-container text-on-secondary-container"><span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span><span class="font-label-sm text-label-sm">ESP32: Online (12ms)</span></div><div class="flex items-center gap-space-sm"><button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-low text-on-surface hover:bg-surface-container-high transition-colors font-label-md text-label-md" onclick="notify('Telemetry stream synchronized with ESP32 node')" type="button"><span class="material-symbols-outlined text-[18px]">sync</span><span class="hidden md:inline">Sync Telemetry</span></button><button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-colors font-label-md text-label-md" onclick="notify('Opening ML Control Parameters &amp; Hyperparameters Modal')" type="button"><span class="material-symbols-outlined text-[18px]">tune</span><span>ML Controls</span></button></div>
+<!-- Nighttime Greenhouse Dark Mode Toggle -->
+<div class="relative flex items-center">
+<button aria-label="Toggle Nighttime Greenhouse Mode" class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-outline-variant/60 dark:border-slate-700 bg-surface-container-low dark:bg-slate-800/90 text-on-surface dark:text-slate-200 hover:bg-surface-container-high dark:hover:bg-slate-700 transition-all duration-300 shadow-sm group focus:outline-none focus:ring-2 focus:ring-primary-container" id="theme-toggle" title="Switch between Day Mode &amp; Night Greenhouse Mode" type="button">
+<!-- Icons Container -->
+<span class="relative flex items-center justify-center w-5 h-5">
+<span class="material-symbols-outlined text-[18px] text-amber-500 transition-all duration-300 rotate-0 scale-100 dark:-rotate-90 dark:scale-0 dark:opacity-0 absolute" id="icon-sun" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+<span class="material-symbols-outlined text-[18px] text-emerald-400 transition-all duration-300 rotate-90 scale-0 opacity-0 dark:rotate-0 dark:scale-100 dark:opacity-100 absolute" id="icon-moon" style="font-variation-settings: 'FILL' 1;">bedtime</span>
+</span>
+<!-- Label / Night Vision Text -->
+<span class="font-label-sm text-label-sm hidden lg:flex items-center gap-1 font-medium select-none">
+<span class="block dark:hidden text-on-surface-variant" id="theme-label-day">Day Mode</span>
+<span class="hidden dark:block text-emerald-400" id="theme-label-night">Night Vision</span>
+</span>
+<!-- Indicator Dot -->
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-emerald-400"></span>
+</button>
+</div>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-sm" title="Active Agronomist Operator"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-surface px-margin py-space-lg min-h-screen transition-colors duration-300"><div class="flex flex-col w-full gap-space-lg">
+<!-- Toast Notification Overlay -->
+<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-space-sm pointer-events-none" id="toast-container"></div>
+<!-- Operational Control Bar -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-space-md shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-space-md transition-colors duration-300">
+<div class="flex flex-wrap items-center gap-space-md">
+<div class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full bg-surface-container-high text-on-surface">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></span>
+<span class="font-label-md text-label-md">Device: <strong class="font-semibold text-primary">esp32_greenhouse_01</strong></span>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-secondary-container/60 text-on-secondary-container">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">sensors</span>
+<span class="font-label-sm text-label-sm">Online • MQTT Connected (Port 8883)</span>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-full bg-surface-container text-on-surface-variant">
+<span class="material-symbols-outlined text-[15px]">memory</span>
+<span class="font-label-sm text-label-sm">FastAPI v0.110 • XGBoost Edge Runner</span>
+</div>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="group flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary-container hover:bg-primary hover:text-on-primary transition-all duration-200 shadow-sm active:scale-95" id="btn-manual-water" type="button">
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:rotate-12" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+<span class="font-label-lg text-label-lg">Manual Watering (5s)</span>
+</button>
+<button class="group flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-lowest text-on-surface hover:bg-surface-container transition-all duration-200 shadow-sm active:scale-95" id="btn-retrain-ml" type="button">
+<span class="material-symbols-outlined text-[20px] transition-transform group-hover:rotate-180 duration-500">model_training</span>
+<span class="font-label-lg text-label-lg">Trigger ML Retraining</span>
+</button>
+</div>
+</div>
+<!-- Row 1: Live Hardware & AI Prediction KPI Cards (4 Equal Columns) -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
+<!-- Card 1: Capacitive Soil Moisture Sensor -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between transition-all duration-200 hover:shadow-md">
+<div class="flex items-start justify-between gap-space-xs">
+<div>
+<span class="px-space-sm py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-container font-label-sm text-label-sm uppercase tracking-wide">
+            Capacitive Sensor v1.2
+          </span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Current Soil Moisture</h2>
+</div>
+<div class="w-10 h-10 rounded-lg bg-secondary-container/60 text-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">humidity_mid</span>
+</div>
+</div>
+<div class="my-space-md">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-display-lg text-display-lg text-on-surface tracking-tight" id="metric-moisture">42.5</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant font-medium">%</span>
+</div>
+<!-- Emerald Progress Bar -->
+<div class="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden mt-space-sm">
+<div class="bg-primary-container h-full rounded-full transition-all duration-700 ease-out" id="bar-moisture" style="width: 42.5%;"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant pt-space-xs">
+<span class="font-body-sm text-body-sm">Optimal: 35% – 65%</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-primary">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+          Within Nominal
+        </span>
+</div>
+</div>
+<!-- Card 2: XGBoost ML Prediction -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between transition-all duration-200 hover:shadow-md">
+<div class="flex items-start justify-between gap-space-xs">
+<div>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wide">
+            XGBoost Regressor
+          </span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Predicted (6h Ahead)</h2>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]">batch_prediction</span>
+</div>
+</div>
+<div class="my-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-display-lg text-display-lg text-on-surface tracking-tight">28.4</span>
+<span class="font-headline-md text-headline-md text-on-surface-variant font-medium">%</span>
+</div>
+<!-- Trend indicator pill -->
+<div class="flex items-center gap-1 px-space-sm py-space-xs rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+<span>-14.1%</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden mt-space-sm">
+<div class="bg-tertiary-container h-full rounded-full transition-all duration-700" style="width: 28.4%;"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant pt-space-xs">
+<span class="font-body-sm text-body-sm">Irrigation Trigger: &lt; 30.0%</span>
+<span class="inline-flex items-center gap-1 font-label-sm text-label-sm text-tertiary">
+<span class="w-2 h-2 rounded-full bg-tertiary-container"></span>
+          Below Limit (8:30 PM)
+        </span>
+</div>
+</div>
+<!-- Card 3: Photoelectric Sensor -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between transition-all duration-200 hover:shadow-md">
+<div class="flex items-start justify-between gap-space-xs">
+<div>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wide">
+            Photoelectric Sensor
+          </span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Ambient Light Exposure</h2>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">wb_sunny</span>
+</div>
+</div>
+<div class="my-space-md">
+<div class="flex flex-col">
+<span class="font-headline-md text-headline-md text-on-surface font-semibold flex items-center gap-space-xs">
+            Daylight / Bright
+          </span>
+<div class="flex items-center gap-2 mt-1">
+<span class="font-body-lg text-body-lg text-on-surface-variant">~1,240</span>
+<span class="font-label-md text-label-md text-on-surface-variant uppercase">lux (ADC: 3120)</span>
+</div>
+</div>
+<div class="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden mt-space-sm">
+<div class="bg-tertiary-fixed-dim h-full rounded-full" style="width: 78%;"></div>
+</div>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant pt-space-xs">
+<span class="font-body-sm text-body-sm">Sensor Status: Active</span>
+<span class="inline-flex items-center gap-1.5 font-label-sm text-label-sm text-primary">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+          Photo Diode Polling
+        </span>
+</div>
+</div>
+<!-- Card 4: 5V Relay + Water Pump -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between transition-all duration-200 hover:shadow-md">
+<div class="flex items-start justify-between gap-space-xs">
+<div>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wide">
+            5V Relay Channel 1
+          </span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Automated Pump Actuator</h2>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high text-on-surface-variant flex items-center justify-center shrink-0 transition-colors duration-300" id="pump-icon-container">
+<span class="material-symbols-outlined text-[22px]">mode_fan</span>
+</div>
+</div>
+<div class="my-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="px-space-md py-space-xs rounded-full bg-surface-container-highest text-on-surface-variant font-label-lg text-label-lg tracking-wide uppercase inline-flex items-center gap-2" id="pump-status-badge">
+<span class="w-2.5 h-2.5 rounded-full bg-on-surface-variant" id="pump-status-dot"></span>
+<span id="pump-status-text">STANDBY (OFF)</span>
+</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-3">
+          Submersible DC 5V • High-side switched
+        </p>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant pt-space-xs">
+<span class="font-body-sm text-body-sm">Last: 2 hours ago</span>
+<span class="font-label-sm text-label-sm text-on-surface">Auto 5s cycle</span>
+</div>
+</div>
+</div>
+<!-- Row 2: Soil Moisture Forecast & MLOps Health (2-Column Grid: 65% / 35%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-stretch">
+<!-- Left Panel (65% width = 8 cols on 12-col grid) -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between transition-colors duration-300">
+<div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm mb-space-md">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Soil Moisture &amp; XGBoost Forecast Timeline</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">12-hour sensor history + 6-hour predictive microclimate trajectory</p>
+</div>
+<!-- Legend -->
+<div class="flex flex-wrap items-center gap-space-sm font-label-sm text-label-sm">
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-1 rounded-full bg-primary-container"></span>
+<span class="text-on-surface">Actual Moisture</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-1 rounded-full bg-secondary" style="border-top: 2px dashed #006c4a;"></span>
+<span class="text-on-surface">XGBoost Forecast</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-3.5 h-1 rounded-full bg-error" style="border-top: 2px dashed #ba1a1a;"></span>
+<span class="text-error font-medium">Critical Trigger (30%)</span>
+</div>
+</div>
+</div>
+<!-- Interactive SVG Line Chart -->
+<div class="w-full relative h-[310px] bg-surface-container-low/40 rounded-lg p-space-sm overflow-hidden flex flex-col justify-between transition-colors duration-300">
+<svg class="w-full h-full select-none" preserveaspectratio="none" viewbox="0 0 800 260">
+<defs>
+<!-- Gradient under actual data -->
+<lineargradient id="emeraldGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#10b981" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#10b981" stop-opacity="0.0"></stop>
+</lineargradient>
+<!-- Gradient under predicted data -->
+<lineargradient id="forecastGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#006c4a" stop-opacity="0.15"></stop>
+<stop offset="100%" stop-color="#006c4a" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Horizontal Gridlines & Y-Axis values -->
+<g class="text-on-surface-variant/40" id="chart-gridlines" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1">
+<!-- 60% line (y = 40) -->
+<line x1="50" x2="780" y1="40" y2="40"></line>
+<!-- 45% line (y = 100) -->
+<line x1="50" x2="780" y1="100" y2="100"></line>
+<!-- 30% Critical Trigger Line (y = 160) -->
+<line stroke="#ba1a1a" stroke-dasharray="6 4" stroke-width="1.8" x1="50" x2="780" y1="160" y2="160"></line>
+<!-- 15% line (y = 220) -->
+<line x1="50" x2="780" y1="220" y2="220"></line>
+</g>
+<!-- Y-Axis Labels -->
+<g class="fill-current text-on-surface-variant font-label-sm" font-size="11" text-anchor="end">
+<text x="42" y="44">60%</text>
+<text x="42" y="104">45%</text>
+<text fill="#ba1a1a" font-weight="600" x="42" y="164">30%</text>
+<text x="42" y="224">15%</text>
+</g>
+<!-- Threshold indicator text -->
+<text class="font-label-sm text-label-sm" fill="#ba1a1a" font-weight="600" text-anchor="end" x="775" y="152">
+              Critical Moisture Limit (30% Trigger Threshold)
+            </text>
+<!-- Vertical Separator for "Now" -->
+<line stroke="#6c7a71" stroke-dasharray="3 3" stroke-width="1.5" x1="510" x2="510" y1="20" y2="235"></line>
+<text class="fill-current text-on-surface-variant font-label-sm" font-size="10" font-weight="600" id="chart-time-now" x="515" y="32">NOW (42.5%)</text>
+<!-- Area Fills -->
+<path d="M 50 56 L 165 72 L 280 84 L 395 98 L 510 110 L 510 240 L 50 240 Z" fill="url(#emeraldGrad)"></path>
+<path d="M 510 110 L 645 142 L 780 166 L 780 240 L 510 240 Z" fill="url(#forecastGrad)"></path>
+<!-- Actual Moisture Path (Solid Emerald) -->
+<path d="M 50 56 Q 110 66 165 72 T 280 84 T 395 98 T 510 110" fill="none" stroke="#10b981" stroke-linecap="round" stroke-width="3.5"></path>
+<!-- XGBoost Forecast Path (Dashed Emerald/Forest) -->
+<path d="M 510 110 Q 580 126 645 142 T 780 166" fill="none" stroke="#006c4a" stroke-dasharray="6 6" stroke-linecap="round" stroke-width="3"></path>
+<!-- Actual Historical Data Points -->
+<circle cx="50" cy="56" fill="#10b981" r="4"></circle>
+<circle cx="165" cy="72" fill="#10b981" r="4"></circle>
+<circle cx="280" cy="84" fill="#10b981" r="4"></circle>
+<circle cx="395" cy="98" fill="#10b981" r="4"></circle>
+<!-- "Now" Sensor Hub Point -->
+<circle cx="510" cy="110" fill="#ffffff" r="7" stroke="#10b981" stroke-width="3"></circle>
+<circle cx="510" cy="110" fill="#10b981" r="3"></circle>
+<!-- Predicted Horizon Point (+3h) -->
+<circle cx="645" cy="142" fill="#ffffff" r="4" stroke="#006c4a" stroke-width="2.5"></circle>
+<!-- Critical Intersect Indicator Point at ~8:30 PM (x ~ 720, y ~ 160) -->
+<g transform="translate(720, 160)">
+<circle class="animate-ping" cx="0" cy="0" fill="#ffdad6" opacity="0.75" r="10"></circle>
+<circle cx="0" cy="0" fill="#ba1a1a" r="5"></circle>
+<!-- Callout pill for threshold breach -->
+<rect fill="#283044" height="20" rx="4" width="96" x="-48" y="-32"></rect>
+<text fill="#ffffff" font-size="9.5" font-weight="600" text-anchor="middle" x="0" y="-18">Cross: 8:30 PM</text>
+</g>
+<!-- Final Endpoint (+6h: 28.4%) -->
+<circle cx="780" cy="166" fill="#006c4a" r="5"></circle>
+<text class="font-label-sm font-semibold fill-current text-tertiary" id="chart-time-predicted" text-anchor="end" x="778" y="186">28.4%</text>
+<!-- X-Axis Labels -->
+<g class="fill-current text-on-surface-variant font-label-sm" font-size="11" text-anchor="middle">
+<text x="50" y="255">-12h</text>
+<text x="165" y="255">-9h</text>
+<text x="280" y="255">-6h</text>
+<text x="395" y="255">-3h</text>
+<text class="font-semibold text-on-surface" x="510" y="255">Now (42.5%)</text>
+<text x="645" y="255">+3h</text>
+<text class="font-semibold text-tertiary" x="780" y="255">+6h (28.4%)</text>
+</g>
+</svg>
+</div>
+</div>
+<!-- Footer Micro-Metrics -->
+<div class="pt-space-md grid grid-cols-2 sm:grid-cols-4 gap-space-sm text-center">
+<div class="p-space-xs rounded-lg bg-surface-container-low transition-colors duration-300">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Avg Evaporation Rate</p>
+<p class="font-label-lg text-label-lg text-on-surface font-semibold">1.12% / hr</p>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low transition-colors duration-300">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Sensor Jitter (SNR)</p>
+<p class="font-label-lg text-label-lg text-primary font-semibold">±0.18% (Stable)</p>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low transition-colors duration-300">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Confidence Band</p>
+<p class="font-label-lg text-label-lg text-on-surface font-semibold">95% (±1.4%)</p>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low transition-colors duration-300">
+<p class="font-label-sm text-label-sm text-on-surface-variant">Expected Actuation</p>
+<p class="font-label-lg text-label-lg text-tertiary font-semibold">In 3h 58m</p>
+</div>
+</div>
+</div>
+<!-- Right Panel (35% width = 4 cols on 12-col grid) -->
+<div class="lg:col-span-4 flex flex-col gap-space-md justify-between">
+<!-- Top Card: Next Automated Irrigation -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between transition-colors duration-300">
+<div>
+<div class="flex items-center justify-between">
+<span class="px-space-sm py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase tracking-wide">
+              Planned Event
+            </span>
+<span class="material-symbols-outlined text-tertiary text-[20px]">schedule</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Next Automated Irrigation</h3>
+<div class="my-space-md p-space-md rounded-lg bg-surface-container-low flex flex-col gap-space-xs transition-colors duration-300">
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Target Time:</span>
+<span class="font-label-lg text-label-lg text-on-surface font-semibold">Today, 8:30 PM</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Duration:</span>
+<span class="font-label-lg text-label-lg text-primary font-semibold">5 Seconds</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Actuator:</span>
+<span class="font-body-sm text-body-sm text-on-surface">Submersible 5V Pump</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<strong class="text-on-surface">Trigger Reason:</strong> Predicted drop below 30.0% moisture threshold derived from dynamic soil dissipation curve.
+          </p>
+</div>
+<div class="mt-space-md pt-space-sm flex items-center justify-between">
+<span class="px-space-sm py-space-xs rounded-full bg-secondary-container/80 text-on-secondary-container font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">security</span>
+            Auto-Shutoff Watchdog Active
+          </span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Relay Ch1</span>
+</div>
+</div>
+<!-- Bottom Card: Continuous MLOps Health & Model Governance -->
+<div class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between transition-colors duration-300">
+<div>
+<div class="flex items-center justify-between">
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wide">
+              MLOps Governance
+            </span>
+<span class="material-symbols-outlined text-primary text-[20px]">schema</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Continuous MLOps Pipeline</h3>
+<div class="mt-space-sm space-y-space-xs">
+<div class="p-space-xs rounded-lg bg-surface-container-low flex items-center justify-between transition-colors duration-300">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Active Model</span>
+<span class="font-label-sm text-label-sm text-on-surface font-semibold">XGBoost v1.4 (MLflow Prod)</span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low flex items-center justify-between transition-colors duration-300">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Accuracy / Residual</span>
+<span class="font-label-sm text-label-sm text-on-surface font-mono">RMSE: 1.28% | R²: 0.94</span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low flex items-center justify-between transition-colors duration-300">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Evidently AI Drift</span>
+<span class="px-space-xs py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold">
+                No Drift (Score: 0.08)
+              </span>
+</div>
+<div class="p-space-xs rounded-lg bg-surface-container-low flex items-center justify-between transition-colors duration-300">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Last Retrained</span>
+<span class="font-body-sm text-body-sm text-on-surface">6h ago via FastAPI Hook</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs flex items-center gap-space-sm">
+<button class="flex-1 py-1.5 px-2 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors font-label-sm text-label-sm text-on-surface text-center" onclick="notify('MLflow Model Registry: v1.4 verified in production')" type="button">
+            MLflow UI ↗
+          </button>
+<button class="flex-1 py-1.5 px-2 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors font-label-sm text-label-sm text-on-surface text-center" onclick="notify('Evidently AI HTML Test Suite: All 14 tests passing')" type="button">
+            Drift Report ↗
+          </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 3: Live ESP32 Telemetry Log (Compact Table) -->
+<div class="w-full bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col transition-colors duration-300">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs mb-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="w-3 h-3 rounded-full bg-primary-container animate-pulse"></span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Live ESP32 Telemetry Stream</h2>
+<span class="px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+          Node: esp32_greenhouse_01
+        </span>
+</div>
+<div class="flex items-center gap-space-md text-on-surface-variant font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">swap_vert</span>
+          Incoming: <strong class="text-on-surface">1 pkt / 30s</strong>
+</span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">lan</span>
+          QoS Level: 1
+        </span>
+</div>
+</div>
+<!-- Table Container -->
+<div class="w-full overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md uppercase tracking-wider transition-colors duration-300">
+<th class="py-space-sm px-space-md rounded-l-lg">Timestamp</th>
+<th class="py-space-sm px-space-md">Soil Moisture (%)</th>
+<th class="py-space-sm px-space-md">Ambient Light State</th>
+<th class="py-space-sm px-space-md">6h AI Prediction</th>
+<th class="py-space-sm px-space-md">Pump Action</th>
+<th class="py-space-sm px-space-md rounded-r-lg text-right">Packet Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container text-on-surface font-body-sm text-body-sm" id="telemetry-table-body">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-sm px-space-md font-mono text-on-surface font-medium">14:32:05</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42.5%
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface">Daylight / Bright (1,240 lx)</td>
+<td class="py-space-sm px-space-md font-medium text-tertiary">28.4% (Threshold Alert)</td>
+<td class="py-space-sm px-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                STANDBY
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[15px]">done</span>
+                MQTT 200 OK
+              </span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-sm px-space-md font-mono text-on-surface font-medium">14:31:35</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42.6%
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface">Daylight / Bright (1,238 lx)</td>
+<td class="py-space-sm px-space-md font-medium text-tertiary">28.5%</td>
+<td class="py-space-sm px-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                STANDBY
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[15px]">done</span>
+                MQTT 200 OK
+              </span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-sm px-space-md font-mono text-on-surface font-medium">14:31:05</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42.8%
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface">Daylight / Bright (1,235 lx)</td>
+<td class="py-space-sm px-space-md font-medium text-tertiary">28.7%</td>
+<td class="py-space-sm px-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                STANDBY
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[15px]">done</span>
+                MQTT 200 OK
+              </span>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-sm px-space-md font-mono text-on-surface font-medium">14:30:35</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42.9%
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface">Daylight / Bright (1,230 lx)</td>
+<td class="py-space-sm px-space-md font-medium text-tertiary">28.9%</td>
+<td class="py-space-sm px-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                STANDBY
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[15px]">done</span>
+                MQTT 200 OK
+              </span>
+</td>
+</tr>
+<!-- Row 5 -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-space-sm px-space-md font-mono text-on-surface font-medium">14:30:05</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1.5 px-space-sm py-0.5 rounded-full bg-secondary-container/50 text-on-secondary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                43.1%
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface">Daylight / Bright (1,225 lx)</td>
+<td class="py-space-sm px-space-md font-medium text-tertiary">29.1%</td>
+<td class="py-space-sm px-space-md">
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm">
+                STANDBY
+              </span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<span class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[15px]">done</span>
+                MQTT 200 OK
+              </span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<script>
+  function notify(message, isError = false) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `pointer-events-auto flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-white font-label-md text-label-md transition-all duration-300 transform translate-y-4 opacity-0 ${
+      isError ? 'bg-error' : 'bg-inverse-surface'
+    }`;
+    toast.innerHTML = `
+      <span class="material-symbols-outlined text-[18px]">${isError ? 'warning' : 'info'}</span>
+      <span>${message}</span>
+    `;
+    
+    container.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => {
+      toast.classList.remove('translate-y-4', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+    }, 10);
+    
+    // Animate out & remove
+    setTimeout(() => {
+      toast.classList.add('opacity-0', 'translate-y-2');
+      setTimeout(() => toast.remove(), 300);
+    }, 3500);
+  }
+
+  // Interactive Nighttime Greenhouse Dark Mode Toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+
+  // Check saved or preferred theme
+  const savedTheme = localStorage.getItem('leafy-theme');
+  if (savedTheme === 'dark') {
+    root.classList.add('dark');
+  }
+
+  themeToggle?.addEventListener('click', () => {
+    const isDark = root.classList.toggle('dark');
+    localStorage.setItem('leafy-theme', isDark ? 'dark' : 'light');
+    if (isDark) {
+      notify('Nighttime Greenhouse Monitoring Activated (Low-Lux Night Vision)');
+    } else {
+      notify('Switched to Daylight Greenhouse Monitoring Mode');
+    }
+  });
+
+  // Interactive 5V Relay Manual Watering trigger
+  const btnManualWater = document.getElementById('btn-manual-water');
+  const pumpStatusBadge = document.getElementById('pump-status-badge');
+  const pumpStatusDot = document.getElementById('pump-status-dot');
+  const pumpStatusText = document.getElementById('pump-status-text');
+  const pumpIconContainer = document.getElementById('pump-icon-container');
+  const metricMoisture = document.getElementById('metric-moisture');
+  const barMoisture = document.getElementById('bar-moisture');
+
+  let isWatering = false;
+
+  btnManualWater?.addEventListener('click', () => {
+    if (isWatering) return;
+    isWatering = true;
+
+    // Change Button State
+    btnManualWater.disabled = true;
+    btnManualWater.classList.add('opacity-75', 'cursor-not-allowed');
+
+    // Activate Pump Indicator
+    pumpStatusBadge.classList.remove('bg-surface-container-highest', 'text-on-surface-variant');
+    pumpStatusBadge.classList.add('bg-primary-container', 'text-on-primary-container');
+    pumpStatusDot.classList.remove('bg-on-surface-variant');
+    pumpStatusDot.classList.add('bg-on-primary-container', 'animate-ping');
+    pumpStatusText.textContent = 'PUMPING (5s)';
+
+    pumpIconContainer.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+    pumpIconContainer.classList.add('bg-primary', 'text-on-primary');
+    pumpIconContainer.querySelector('.material-symbols-outlined')?.classList.add('animate-spin');
+
+    notify('ESP32 Relay 1 Actuated: 5-Second Irrigation Cycle Initiated');
+
+    // Simulate duration countdown
+    setTimeout(() => {
+      // Revert pump status
+      pumpStatusBadge.classList.add('bg-surface-container-highest', 'text-on-surface-variant');
+      pumpStatusBadge.classList.remove('bg-primary-container', 'text-on-primary-container');
+      pumpStatusDot.classList.add('bg-on-surface-variant');
+      pumpStatusDot.classList.remove('bg-on-primary-container', 'animate-ping');
+      pumpStatusText.textContent = 'STANDBY (OFF)';
+
+      pumpIconContainer.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+      pumpIconContainer.classList.remove('bg-primary', 'text-on-primary');
+      pumpIconContainer.querySelector('.material-symbols-outlined')?.classList.remove('animate-spin');
+
+      // Bump moisture reading dynamically
+      if (metricMoisture && barMoisture) {
+        metricMoisture.textContent = '54.2';
+        barMoisture.style.width = '54.2%';
+      }
+
+      btnManualWater.disabled = false;
+      btnManualWater.classList.remove('opacity-75', 'cursor-not-allowed');
+      isWatering = false;
+      notify('Relay deactivated. Soil moisture replenished to 54.2%');
+    }, 5000);
+  });
+
+  // Interactive Trigger ML Retraining
+  const btnRetrainML = document.getElementById('btn-retrain-ml');
+  btnRetrainML?.addEventListener('click', () => {
+    btnRetrainML.classList.add('pointer-events-none', 'opacity-60');
+    notify('Dispatching FastAPI Webhook: POST /api/v1/retrain (XGBoost Regressor)...');
+
+    setTimeout(() => {
+      btnRetrainML.classList.remove('pointer-events-none', 'opacity-60');
+      notify('XGBoost Retraining Complete: Val RMSE improved to 1.19% (MLflow logged)');
+    }, 2800);
+  });
+</script></main><footer class="w-full bg-surface-container-low py-space-md px-margin shadow-[0_-1px_8px_rgba(0,0,0,0.02)] transition-colors duration-300"><div class="w-full flex flex-col md:flex-row items-center justify-between gap-space-sm text-on-surface-variant"><div class="flex items-center gap-space-sm font-label-sm text-label-sm"><span>Pipeline: <strong>v2.4.1-edge-opt</strong></span><span>•</span><span>ESP32-S3 Microclimate Array</span><span>•</span><span class="text-primary font-label-sm">Optimal Flow Status</span></div><div class="font-body-sm text-body-sm">© 2024 Leafy Precision Agronomy &amp; MLOps Platform</div></div></footer></body></html>
