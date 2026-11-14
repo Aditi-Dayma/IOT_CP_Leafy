@@ -5,8 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "npx -y serve . -l 3000",
-    "start": "npx -y serve . -l 3000",
-    "build": "echo \"Dashboard ready for static deployment on Vercel.\""
+    "start": "npx -y serve . -l 3000"
   },
   "keywords": [
     "iot",
@@ -21,4 +20,3 @@
   "author": "Leafy Team",
   "license": "MIT"
 }
-
