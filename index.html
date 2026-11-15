@@ -2190,8 +2190,8 @@
     // ==========================================
     let serialPort = null;
     let serialReader = null;
-    let serialWriter = null;
     let isHardwareConnected = false;
+    let serialWriteQueue = Promise.resolve();
 
     const btnConnectHw = document.getElementById('btn-connect-hardware');
     const btnConnectHwText = document.getElementById('btn-connect-hw-text');
@@ -2277,18 +2277,18 @@
         readSerialLoop();
 
         // Automatically sync user's configured timing parameters to ESP32 firmware
-        setTimeout(() => {
-          if (typeof scheduleConfig !== 'undefined') {
+        setTimeout(async () => {
+          if (typeof scheduleConfig !== 'undefined' && isHardwareConnected) {
             if (scheduleConfig.mode === 'interval') {
-              sendSerialCommand(`INTERVAL:${scheduleConfig.intervalMins * 60}`);
+              await sendSerialCommand(`INTERVAL:${scheduleConfig.intervalMins * 60}`);
             }
-            sendSerialCommand(`DURATION:${scheduleConfig.durationSeconds}`);
-            sendSerialCommand(`RELAY_LOGIC:${scheduleConfig.relayActiveLow ? "LOW" : "HIGH"}`);
-            sendSerialCommand(`THRESHOLD:${Math.round(state.threshold)}`);
+            await sendSerialCommand(`DURATION:${scheduleConfig.durationSeconds}`);
+            await sendSerialCommand(`RELAY_LOGIC:${scheduleConfig.relayActiveLow ? "LOW" : "HIGH"}`);
+            await sendSerialCommand(`THRESHOLD:${Math.round(state.threshold)}`);
             if (typeof weatherState !== 'undefined') {
-              sendSerialCommand(weatherState.isRainForecasted ? "RAIN_LOCKOUT:1" : "RAIN_LOCKOUT:0");
+              await sendSerialCommand(weatherState.isRainForecasted ? "RAIN_LOCKOUT:1" : "RAIN_LOCKOUT:0");
             }
-            sendSerialCommand("FETCH_NOW");
+            await sendSerialCommand("FETCH_NOW");
             notify("⚡ Synced custom schedule, watchdog duration & relay logic to ESP32!");
           }
         }, 1200);
@@ -2299,15 +2299,15 @@
     }
 
     async function disconnectHardwareSerial() {
+      isHardwareConnected = false;
       try {
+        // Await any pending serial write command before releasing
+        await serialWriteQueue.catch(() => {});
+
         if (serialReader) {
           await serialReader.cancel();
           serialReader.releaseLock();
           serialReader = null;
-        }
-        if (serialWriter) {
-          serialWriter.releaseLock();
-          serialWriter = null;
         }
         if (serialPort) {
           await serialPort.close();
@@ -2317,7 +2317,6 @@
         console.error("Disconnect error:", err);
       }
 
-      isHardwareConnected = false;
       btnConnectHw.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
       btnConnectHw.classList.remove('bg-red-600', 'hover:bg-red-700');
       btnConnectHwText.textContent = "Connect ESP32";
@@ -2367,19 +2366,36 @@
 
     async function sendSerialCommand(cmd) {
       if (!serialPort || !serialPort.writable) {
-        notify("ESP32 is not connected via USB Serial. Click 'Connect ESP32' first.", true);
-        return;
+        return Promise.resolve();
       }
-      try {
-        const encoder = new TextEncoder();
-        const writer = serialPort.writable.getWriter();
-        await writer.write(encoder.encode(cmd + "\n"));
-        writer.releaseLock();
-        logToSerialTerminal(">> " + cmd, "tx");
-      } catch (err) {
-        console.error("Failed to send serial command:", err);
-        notify("Error writing to Serial: " + err.message, true);
-      }
+
+      // Chain through write queue to guarantee single-writer access to WritableStream
+      serialWriteQueue = serialWriteQueue.then(async () => {
+        if (!serialPort || !serialPort.writable) return;
+        let writer = null;
+        try {
+          const encoder = new TextEncoder();
+          writer = serialPort.writable.getWriter();
+          await writer.write(encoder.encode(cmd + "\n"));
+          logToSerialTerminal(">> " + cmd, "tx");
+          // Safe 60ms pacing so ESP32 serial buffer processes each line
+          await new Promise(r => setTimeout(r, 60));
+        } catch (err) {
+          console.error("Failed to send serial command (" + cmd + "):", err);
+        } finally {
+          if (writer) {
+            try {
+              writer.releaseLock();
+            } catch (e) {
+              // Ignore if already released
+            }
+          }
+        }
+      }).catch(err => {
+        console.error("Serial write queue error:", err);
+      });
+
+      return serialWriteQueue;
     }
 
     function handleIncomingSerialLine(line) {
@@ -2831,12 +2847,14 @@
 
       // Dispatch to ESP32 if connected
       if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
-        if (scheduleConfig.mode === 'interval') {
-          sendSerialCommand(`INTERVAL:${scheduleConfig.intervalMins * 60}`);
-        }
-        sendSerialCommand(`DURATION:${scheduleConfig.durationSeconds}`);
-        sendSerialCommand(`RELAY_LOGIC:${scheduleConfig.relayActiveLow ? "LOW" : "HIGH"}`);
-        notify("⚡ Configured timing parameters synchronized with ESP32 firmware!");
+        (async () => {
+          if (scheduleConfig.mode === 'interval') {
+            await sendSerialCommand(`INTERVAL:${scheduleConfig.intervalMins * 60}`);
+          }
+          await sendSerialCommand(`DURATION:${scheduleConfig.durationSeconds}`);
+          await sendSerialCommand(`RELAY_LOGIC:${scheduleConfig.relayActiveLow ? "LOW" : "HIGH"}`);
+          notify("⚡ Configured timing parameters synchronized with ESP32 firmware!");
+        })();
       }
     }
 
