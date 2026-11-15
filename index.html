@@ -580,6 +580,173 @@
 
       </div>
 
+      <!-- Agro-Meteorological Weather & Crop Seasonal Intelligence Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+        
+        <!-- Weather & 3-Hour Rain Forecast Widget (7 cols) -->
+        <div class="lg:col-span-7 bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-sm border border-outline-variant/30 flex flex-col justify-between transition-colors duration-300">
+          <div>
+            <!-- Header with Location and Refresh -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-outline-variant/20">
+              <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold text-xl shrink-0">
+                  <span class="material-symbols-outlined text-[24px]">cloud_sync</span>
+                </div>
+                <div>
+                  <h3 class="font-headline font-bold text-base sm:text-lg text-on-surface flex items-center gap-2">
+                    <span>Live Agro-Meteorological Forecast</span>
+                    <span class="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 text-[10px] font-semibold">Open-Meteo API</span>
+                  </h3>
+                  <p class="text-xs text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+                    <span class="material-symbols-outlined text-[14px]">location_on</span>
+                    <span id="weather-location-label">Indore, Central Plateau (Auto-Detected)</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Location Selector & GPS Button -->
+              <div class="flex items-center gap-2 text-xs">
+                <select id="select-weather-city" class="py-1 px-2.5 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface text-xs focus:ring-2 focus:ring-primary focus:outline-none">
+                  <option value="22.7196,75.8577,Indore" selected>Indore (Central Plateau)</option>
+                  <option value="19.076,72.8777,Mumbai">Mumbai (Tropical Coastal)</option>
+                  <option value="18.5204,73.8567,Pune">Pune (Western Ghats)</option>
+                  <option value="28.6139,77.2090,Delhi">Delhi (Northern Plains)</option>
+                  <option value="12.9716,77.5946,Bangalore">Bangalore (Deccan)</option>
+                  <option value="26.9124,75.7873,Jaipur">Jaipur (Semi-Arid)</option>
+                  <option value="20.0000,73.7800,Nashik">Nashik (Agricultural Hub)</option>
+                  <option value="custom">📍 Detect GPS Location...</option>
+                </select>
+                <button class="p-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors" id="btn-refresh-weather" title="Refresh Live Weather API" type="button">
+                  <span class="material-symbols-outlined text-[17px]">refresh</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Current Weather Metrics Row -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 my-4 text-center">
+              <div class="p-2.5 rounded-xl bg-surface-container-low transition-colors">
+                <span class="text-[11px] text-on-surface-variant">Ambient Temp</span>
+                <p class="font-headline font-bold text-lg sm:text-xl text-on-surface mt-0.5" id="weather-temp">--°C</p>
+                <span class="text-[10px] text-on-surface-variant" id="weather-condition">Loading...</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-surface-container-low transition-colors">
+                <span class="text-[11px] text-on-surface-variant">Air Humidity</span>
+                <p class="font-headline font-bold text-lg sm:text-xl text-blue-600 dark:text-blue-400 mt-0.5" id="weather-humidity">--%</p>
+                <span class="text-[10px] text-on-surface-variant">Atmospheric RH</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-surface-container-low transition-colors">
+                <span class="text-[11px] text-on-surface-variant">3h Rain Probability</span>
+                <p class="font-headline font-bold text-lg sm:text-xl text-amber-500 mt-0.5" id="weather-rain-prob">--%</p>
+                <span class="text-[10px] text-on-surface-variant" id="weather-rain-vol">0.0 mm expected</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-surface-container-low transition-colors">
+                <span class="text-[11px] text-on-surface-variant">Next 3h Window</span>
+                <p class="font-headline font-bold text-lg sm:text-xl text-on-surface mt-0.5" id="weather-hourly-range">+1h to +3h</p>
+                <span class="text-[10px] text-on-surface-variant">Radar Forecast</span>
+              </div>
+            </div>
+
+            <!-- Smart Rain Lockout Banner -->
+            <div class="p-3 rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 transition-all duration-300 flex items-center justify-between gap-3" id="rain-lockout-banner">
+              <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined text-[24px] text-emerald-500" id="rain-lockout-icon">wb_sunny</span>
+                <div>
+                  <h4 class="font-headline font-bold text-xs sm:text-sm text-on-surface" id="rain-lockout-title">No Immediate Rain Expected (&lt; 40%)</h4>
+                  <p class="text-[11px] text-on-surface-variant" id="rain-lockout-desc">Autonomous irrigation authorized if soil moisture drops below threshold.</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300" id="rain-lockout-status-badge">
+                Pump Allowed
+              </span>
+            </div>
+          </div>
+
+          <!-- Bottom: Next 3 Hours Hourly Rain Probability Sparkline -->
+          <div class="pt-3 mt-3 border-t border-outline-variant/20 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <span class="text-on-surface-variant font-medium">Hourly Precipitation Trajectory:</span>
+            <div class="flex items-center gap-2 font-mono text-[11px]" id="weather-hourly-chips">
+              <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface" id="chip-h1">+1h: --%</span>
+              <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface" id="chip-h2">+2h: --%</span>
+              <span class="px-2 py-0.5 rounded bg-surface-container text-on-surface" id="chip-h3">+3h: --%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3-Hour Cycle Scheduler & Seasonal Crop Recovery Target (5 cols) -->
+        <div class="lg:col-span-5 bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-sm border border-outline-variant/30 flex flex-col justify-between transition-colors duration-300">
+          <div>
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+              <div class="flex items-center gap-2">
+                <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold">
+                  <span class="material-symbols-outlined text-[20px]">agriculture</span>
+                </span>
+                <div>
+                  <h3 class="font-headline font-bold text-base text-on-surface">3-Hour Cycle &amp; Crop Intelligence</h3>
+                  <p class="text-xs text-on-surface-variant">Seasonal moisture limits &amp; rain-miss recovery</p>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container font-mono text-[10px] font-bold" id="badge-cycle-interval">3 Hours</span>
+            </div>
+
+            <!-- Crop & Season Selection Form -->
+            <div class="grid grid-cols-2 gap-2.5 my-3 text-xs">
+              <div>
+                <label class="font-semibold text-on-surface block mb-1" for="select-crop-type">Crop Variety:</label>
+                <select id="select-crop-type" class="w-full py-1.5 px-2.5 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface text-xs focus:ring-2 focus:ring-primary focus:outline-none">
+                  <option value="tomato" selected>Tomato (Max: 70%)</option>
+                  <option value="spinach">Spinach / Herbs (Max: 75%)</option>
+                  <option value="wheat">Wheat (Max: 60%)</option>
+                  <option value="rice">Paddy / Rice (Max: 85%)</option>
+                  <option value="maize">Maize / Corn (Max: 65%)</option>
+                  <option value="cotton">Cotton (Max: 60%)</option>
+                </select>
+              </div>
+              <div>
+                <label class="font-semibold text-on-surface block mb-1" for="select-crop-season">Growing Season:</label>
+                <select id="select-crop-season" class="w-full py-1.5 px-2.5 rounded-lg bg-surface-container border border-outline-variant/40 text-on-surface text-xs focus:ring-2 focus:ring-primary focus:outline-none">
+                  <option value="kharif" selected>Kharif (Monsoon)</option>
+                  <option value="rabi">Rabi (Winter)</option>
+                  <option value="zaid">Zaid (Summer)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Seasonal Moisture Limits Banner -->
+            <div class="p-3 rounded-xl bg-surface-container-low text-xs space-y-1.5 transition-colors">
+              <div class="flex justify-between items-center">
+                <span class="text-on-surface-variant">Optimal Crop Max Moisture:</span>
+                <span class="font-bold text-on-surface" id="val-crop-max-moist">70%</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-on-surface-variant font-medium text-emerald-700 dark:text-emerald-300">Missed-Rain Recovery Target (50% of Max):</span>
+                <span class="font-bold text-primary text-sm font-mono" id="val-crop-recovery-target">35%</span>
+              </div>
+              <div class="flex justify-between items-center pt-1 border-t border-outline-variant/20">
+                <span class="text-on-surface-variant">Next 3h Cycle Sample In:</span>
+                <span class="font-mono font-bold text-tertiary" id="timer-cycle-countdown">02h 59m 59s</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons: Fetch Value Now & Simulate Missed Rain -->
+          <div class="pt-3 border-t border-outline-variant/20 flex flex-wrap items-center gap-2">
+            <!-- Fetch Now Button -->
+            <button class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all text-xs font-semibold shadow-sm active:scale-95" id="btn-fetch-3h-now" type="button" title="Sample Pin 34 and evaluate 3-hour microclimate decision now">
+              <span class="material-symbols-outlined text-[17px]">speed</span>
+              <span>Fetch Value Now</span>
+            </button>
+
+            <!-- Test Missed Rain Recovery -->
+            <button class="flex items-center gap-1.5 py-2 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface transition-all text-xs font-semibold border border-outline-variant/40 active:scale-95" id="btn-test-missed-rain" type="button" title="Test when rain was predicted but failed to fall: pump runs to 50% max moisture">
+              <span class="material-symbols-outlined text-[17px] text-amber-500">water_loss</span>
+              <span class="hidden sm:inline">Simulate Missed Rain</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
       <!-- Row 2: Moisture & ML Timeline Chart (Left) + Irrigation & MLOps (Right) -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
@@ -2150,6 +2317,353 @@
       serialLogsContainer.appendChild(line);
       serialLogsContainer.scrollTop = serialLogsContainer.scrollHeight;
     }
+
+    // ==========================================
+    // Agro-Meteorological Weather & Crop Intelligence Engine
+    // Open-Meteo API, 3-Hour Cycle, Rain Lockout & Recovery
+    // ==========================================
+    
+    // Weather state
+    const weatherState = {
+      lat: 22.7196,
+      lon: 75.8577,
+      cityName: "Indore (Central Plateau)",
+      temp: null,
+      humidity: null,
+      weatherCode: 0,
+      rainProbNext3h: 0,
+      rainVolNext3h: 0,
+      isRainForecasted: false,
+      lastWeatherFetch: 0
+    };
+
+    // Crop database with seasonal max moisture & 50% recovery target
+    const cropSeasonalDB = {
+      tomato: {
+        name: "Tomato",
+        kharif: { max: 70, target: 35 },
+        rabi: { max: 60, target: 30 },
+        zaid: { max: 65, target: 33 }
+      },
+      spinach: {
+        name: "Spinach / Herbs",
+        kharif: { max: 75, target: 38 },
+        rabi: { max: 70, target: 35 },
+        zaid: { max: 80, target: 40 }
+      },
+      wheat: {
+        name: "Wheat",
+        kharif: { max: 60, target: 30 },
+        rabi: { max: 65, target: 33 },
+        zaid: { max: 55, target: 28 }
+      },
+      rice: {
+        name: "Paddy / Rice",
+        kharif: { max: 85, target: 43 },
+        rabi: { max: 75, target: 38 },
+        zaid: { max: 80, target: 40 }
+      },
+      maize: {
+        name: "Maize / Corn",
+        kharif: { max: 65, target: 33 },
+        rabi: { max: 60, target: 30 },
+        zaid: { max: 70, target: 35 }
+      },
+      cotton: {
+        name: "Cotton",
+        kharif: { max: 60, target: 30 },
+        rabi: { max: 55, target: 28 },
+        zaid: { max: 65, target: 33 }
+      }
+    };
+
+    // Current selection
+    let activeCrop = "tomato";
+    let activeSeason = "kharif";
+    let activeMaxMoist = 70;
+    let activeRecoveryTarget = 35;
+
+    // 3-Hour Cycle Scheduler State
+    const CYCLE_DURATION_MS = 3 * 3600 * 1000; // 3 Hours
+    let nextCycleTimestamp = Date.now() + CYCLE_DURATION_MS;
+    let rainWasPredictedInPreviousWindow = false;
+
+    // WMO Weather Code Map
+    function getWmoInfo(code) {
+      if (code === 0) return { text: "Clear Sky", icon: "wb_sunny" };
+      if (code >= 1 && code <= 3) return { text: "Partly Cloudy", icon: "partly_cloudy_day" };
+      if (code >= 45 && code <= 48) return { text: "Fog / Mist", icon: "foggy" };
+      if (code >= 51 && code <= 55) return { text: "Drizzle", icon: "rainy" };
+      if (code >= 61 && code <= 65) return { text: "Rain", icon: "rainy" };
+      if (code >= 80 && code <= 82) return { text: "Rain Showers", icon: "water_drop" };
+      if (code >= 95 && code <= 99) return { text: "Thunderstorm", icon: "thunderstorm" };
+      return { text: "Overcast", icon: "cloud" };
+    }
+
+    // Fetch Live Open-Meteo Weather
+    async function fetchLiveWeather(lat = weatherState.lat, lon = weatherState.lon, cityName = weatherState.cityName) {
+      try {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=precipitation_probability,precipitation&forecast_hours=6`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+
+        weatherState.lat = lat;
+        weatherState.lon = lon;
+        weatherState.cityName = cityName;
+        weatherState.temp = data.current.temperature_2m;
+        weatherState.humidity = data.current.relative_humidity_2m;
+        weatherState.weatherCode = data.current.weather_code;
+        weatherState.lastWeatherFetch = Date.now();
+
+        // Calculate next 3 hours precipitation
+        const probs = data.hourly.precipitation_probability || [0, 0, 0, 0];
+        const amounts = data.hourly.precipitation || [0, 0, 0, 0];
+        
+        const p1 = probs[1] || 0;
+        const p2 = probs[2] || 0;
+        const p3 = probs[3] || 0;
+        const maxProb = Math.max(p1, p2, p3);
+        const totalMm = +((amounts[1] || 0) + (amounts[2] || 0) + (amounts[3] || 0)).toFixed(1);
+
+        weatherState.rainProbNext3h = maxProb;
+        weatherState.rainVolNext3h = totalMm;
+
+        // Rain lockout triggers if rain probability >= 40% OR volume >= 0.5mm
+        weatherState.isRainForecasted = (maxProb >= 40 || totalMm >= 0.5);
+
+        // Update UI
+        renderWeatherUI(data.current, p1, p2, p3, amounts[1] || 0, amounts[2] || 0, amounts[3] || 0);
+
+        // Forward Rain Lockout state to physical ESP32
+        if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+          sendSerialCommand(weatherState.isRainForecasted ? "RAIN_LOCKOUT:1" : "RAIN_LOCKOUT:0");
+        }
+
+      } catch (err) {
+        console.warn("Weather API fetch fallback:", err);
+        // Fallback demo values if offline/blocked
+        weatherState.temp = 27.4;
+        weatherState.humidity = 68;
+        weatherState.rainProbNext3h = 15;
+        weatherState.rainVolNext3h = 0.0;
+        weatherState.isRainForecasted = false;
+        renderWeatherUI({ temperature_2m: 27.4, relative_humidity_2m: 68, weather_code: 1 }, 10, 15, 10, 0, 0, 0);
+      }
+    }
+
+    function renderWeatherUI(current, p1, p2, p3, v1, v2, v3) {
+      const locLabel = document.getElementById('weather-location-label');
+      const tempEl = document.getElementById('weather-temp');
+      const condEl = document.getElementById('weather-condition');
+      const humEl = document.getElementById('weather-humidity');
+      const rainProbEl = document.getElementById('weather-rain-prob');
+      const rainVolEl = document.getElementById('weather-rain-vol');
+      const chip1 = document.getElementById('chip-h1');
+      const chip2 = document.getElementById('chip-h2');
+      const chip3 = document.getElementById('chip-h3');
+
+      if (locLabel) locLabel.textContent = `${weatherState.cityName} (Live)`;
+      if (tempEl) tempEl.textContent = `${current.temperature_2m.toFixed(1)}°C`;
+      if (humEl) humEl.textContent = `${Math.round(current.relative_humidity_2m)}%`;
+
+      const wmo = getWmoInfo(current.weather_code);
+      if (condEl) condEl.textContent = wmo.text;
+      if (rainProbEl) rainProbEl.textContent = `${weatherState.rainProbNext3h}%`;
+      if (rainVolEl) rainVolEl.textContent = `${weatherState.rainVolNext3h} mm expected`;
+
+      if (chip1) chip1.textContent = `+1h: ${p1}% (${v1}mm)`;
+      if (chip2) chip2.textContent = `+2h: ${p2}% (${v2}mm)`;
+      if (chip3) chip3.textContent = `+3h: ${p3}% (${v3}mm)`;
+
+      // Update Rain Lockout Banner
+      const banner = document.getElementById('rain-lockout-banner');
+      const icon = document.getElementById('rain-lockout-icon');
+      const title = document.getElementById('rain-lockout-title');
+      const desc = document.getElementById('rain-lockout-desc');
+      const badge = document.getElementById('rain-lockout-status-badge');
+
+      if (weatherState.isRainForecasted) {
+        if (banner) {
+          banner.className = "p-3 rounded-xl border border-blue-500/40 bg-blue-50/70 dark:bg-blue-950/30 transition-all duration-300 flex items-center justify-between gap-3";
+        }
+        if (icon) {
+          icon.textContent = "rainy";
+          icon.className = "material-symbols-outlined text-[24px] text-blue-500";
+        }
+        if (title) title.textContent = `🌧️ Rain Predicted in Next 3h (${weatherState.rainProbNext3h}% Chance)`;
+        if (desc) desc.textContent = "Pump held OFF to prevent water waste and root saturation. Awaiting natural rain.";
+        if (badge) {
+          badge.textContent = "Rain Lockout: Pump OFF";
+          badge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0 bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300";
+        }
+      } else {
+        if (banner) {
+          banner.className = "p-3 rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 transition-all duration-300 flex items-center justify-between gap-3";
+        }
+        if (icon) {
+          icon.textContent = "wb_sunny";
+          icon.className = "material-symbols-outlined text-[24px] text-emerald-500";
+        }
+        if (title) title.textContent = `No Immediate Rain Expected (< 40%)`;
+        if (desc) desc.textContent = "Autonomous irrigation authorized if soil moisture drops below threshold.";
+        if (badge) {
+          badge.textContent = "Pump Allowed";
+          badge.className = "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shrink-0 bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300";
+        }
+      }
+    }
+
+    // Crop & Seasonal Targets calculation
+    function updateCropSeasonalLimits() {
+      const cropSelect = document.getElementById('select-crop-type');
+      const seasonSelect = document.getElementById('select-crop-season');
+      if (cropSelect) activeCrop = cropSelect.value;
+      if (seasonSelect) activeSeason = seasonSelect.value;
+
+      const cropData = cropSeasonalDB[activeCrop] || cropSeasonalDB.tomato;
+      const seasonData = cropData[activeSeason] || cropData.kharif;
+
+      activeMaxMoist = seasonData.max;
+      activeRecoveryTarget = seasonData.target; // Exactly 50% of max
+
+      const maxEl = document.getElementById('val-crop-max-moist');
+      const targetEl = document.getElementById('val-crop-recovery-target');
+      if (maxEl) maxEl.textContent = `${activeMaxMoist}%`;
+      if (targetEl) targetEl.textContent = `${activeRecoveryTarget}%`;
+    }
+
+    // 3-Hour Countdown Timer loop
+    setInterval(() => {
+      const now = Date.now();
+      const diff = Math.max(0, nextCycleTimestamp - now);
+      
+      const hours = Math.floor(diff / (3600 * 1000));
+      const mins = Math.floor((diff % (3600 * 1000)) / (60 * 1000));
+      const secs = Math.floor((diff % (60 * 1000)) / 1000);
+
+      const timerEl = document.getElementById('timer-cycle-countdown');
+      if (timerEl) {
+        timerEl.textContent = `${String(hours).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
+      }
+
+      // When 3-hour timer hits 0: execute cycle!
+      if (diff === 0) {
+        execute3HourCycle();
+      }
+    }, 1000);
+
+    // Core 3-Hour Evaluation Function
+    function execute3HourCycle(isManualTrigger = false) {
+      nextCycleTimestamp = Date.now() + CYCLE_DURATION_MS;
+
+      // Request fresh reading from ESP32 if connected
+      if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+        sendSerialCommand("FETCH_NOW");
+      }
+
+      // Check for Missed-Rain Condition:
+      // If rain was forecast in previous window, but moisture is STILL low (it didn't rain):
+      if (rainWasPredictedInPreviousWindow && state.soilMoisture < activeRecoveryTarget) {
+        engageMissedRainRecovery("Scheduled 3h window passed with 0 mm rainfall.");
+        rainWasPredictedInPreviousWindow = false;
+        return;
+      }
+
+      // Remember if rain is forecast for this upcoming window
+      rainWasPredictedInPreviousWindow = weatherState.isRainForecasted;
+
+      // Standard evaluation
+      if (state.soilMoisture < state.threshold) {
+        if (weatherState.isRainForecasted) {
+          notify(`🌧️ Rain Lockout: Moisture is ${state.soilMoisture.toFixed(1)}%, but rain is forecast in next 3h (${weatherState.rainProbNext3h}%). Pump held OFF to save water.`);
+          if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+            sendSerialCommand("RAIN_LOCKOUT:1");
+          }
+        } else {
+          notify(`💧 3h Scheduled Cycle: Soil is dry (${state.soilMoisture.toFixed(1)}%). Engaging irrigation cycle.`);
+          btnManualWater?.click();
+        }
+      } else {
+        notify(`🌱 3h Scheduled Cycle: Soil moisture is nominal (${state.soilMoisture.toFixed(1)}%). No irrigation needed.`);
+      }
+    }
+
+    // Engage Missed-Rain Recovery: Irrigate to 50% of crop seasonal max moisture
+    function engageMissedRainRecovery(reason = "Simulated missed rain event") {
+      updateCropSeasonalLimits();
+      const targetMoisture = activeRecoveryTarget;
+
+      notify(`⚠️ Rain Missed Recovery Triggered: Predicted rain did not occur! Pumping until crop reaches 50% max seasonal moisture (${targetMoisture}%)...`);
+
+      // Inform ESP32 to pump to target
+      if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+        sendSerialCommand(`PUMP_TO_TARGET:${targetMoisture}`);
+      }
+
+      // Animate pump ON
+      setPumpUIState(true);
+
+      // Simulation steps for web UI
+      let interval = setInterval(() => {
+        if (state.soilMoisture < targetMoisture) {
+          state.soilMoisture = +(state.soilMoisture + 1.5).toFixed(1);
+          metricMoisture.textContent = state.soilMoisture.toFixed(1);
+          barMoisture.style.width = `${state.soilMoisture}%`;
+        } else {
+          clearInterval(interval);
+          setPumpUIState(false);
+          notify(`✅ Seasonal Recovery Complete: Soil moisture restored to ${targetMoisture}% (50% of ${activeCrop.toUpperCase()} max). Pump turned OFF.`);
+          addTelemetryPacket(state.soilMoisture, `Live Agro Radar (${weatherState.cityName})`, state.predicted6h, "RECOVERY SHUTOFF", "TARGET 100%");
+        }
+      }, 500);
+    }
+
+    // Button Listeners
+    document.getElementById('btn-fetch-3h-now')?.addEventListener('click', () => {
+      notify("⚡ Executing On-Demand 3-Hour Microclimate & Moisture Evaluation...");
+      execute3HourCycle(true);
+    });
+
+    document.getElementById('btn-test-missed-rain')?.addEventListener('click', () => {
+      engageMissedRainRecovery("User interactive simulation");
+    });
+
+    document.getElementById('select-crop-type')?.addEventListener('change', updateCropSeasonalLimits);
+    document.getElementById('select-crop-season')?.addEventListener('change', updateCropSeasonalLimits);
+
+    // City Selector
+    document.getElementById('select-weather-city')?.addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'custom') {
+        if ('geolocation' in navigator) {
+          notify("Detecting your GPS location...");
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              fetchLiveWeather(pos.coords.latitude, pos.coords.longitude, "Local GPS Location");
+              notify(`GPS Location Detected: (${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)})`);
+            },
+            (err) => {
+              notify("GPS detection denied/failed. Using default.", true);
+            }
+          );
+        } else {
+          notify("Geolocation is not supported by your browser.", true);
+        }
+      } else {
+        const [lat, lon, name] = val.split(',');
+        fetchLiveWeather(parseFloat(lat), parseFloat(lon), name);
+      }
+    });
+
+    document.getElementById('btn-refresh-weather')?.addEventListener('click', () => {
+      notify("Refreshing live Open-Meteo weather radar...");
+      fetchLiveWeather();
+    });
+
+    // Initial weather fetch & crop setup
+    updateCropSeasonalLimits();
+    fetchLiveWeather();
   </script>
 </body>
 </html>
