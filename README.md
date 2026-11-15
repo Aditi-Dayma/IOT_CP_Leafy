@@ -132,8 +132,9 @@ stitch_leafy_smart_plant_dashboard/
 ├── .gitignore            # Git ignore file
 ├── README.md             # Deployment & technical documentation
 ├── IDE_Code/
-│   ├── IDE_Code.ino      # ESP32 USB Web Serial firmware (bidirectional commands)
-│   └── IDE_Code_WiFi.ino # Optional ESP32 Wi-Fi + MQTT firmware
+│   └── IDE_Code.ino      # ESP32 USB Web Serial firmware (bidirectional commands)
+├── IDE_Code_WiFi/
+│   └── IDE_Code_WiFi.ino # Optional ESP32 Wi-Fi + MQTT firmware (separate sketch folder)
 └── stitch_leafy_smart_plant_dashboard/
     ├── bio_telemetry_precision/
     │   └── DESIGN.md     # Design system tokens and style specifications
