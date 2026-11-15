@@ -672,7 +672,7 @@
           </div>
         </div>
 
-        <!-- 3-Hour Cycle Scheduler & Seasonal Crop Recovery Target (5 cols) -->
+        <!-- Configurable Cycle Scheduler & Seasonal Crop Recovery Target (5 cols) -->
         <div class="lg:col-span-5 bg-surface-container-lowest rounded-2xl p-5 sm:p-6 shadow-sm border border-outline-variant/30 flex flex-col justify-between transition-colors duration-300">
           <div>
             <!-- Header -->
@@ -682,11 +682,14 @@
                   <span class="material-symbols-outlined text-[20px]">agriculture</span>
                 </span>
                 <div>
-                  <h3 class="font-headline font-bold text-base text-on-surface">3-Hour Cycle &amp; Crop Intelligence</h3>
-                  <p class="text-xs text-on-surface-variant">Seasonal moisture limits &amp; rain-miss recovery</p>
+                  <h3 class="font-headline font-bold text-base text-on-surface" id="title-cycle-scheduler">Irrigation Scheduler &amp; Intelligence</h3>
+                  <p class="text-xs text-on-surface-variant" id="subtitle-cycle-scheduler">Configurable schedule, seasonal limits &amp; rain lockout</p>
                 </div>
               </div>
-              <span class="px-2 py-0.5 rounded-full bg-secondary-container/60 text-on-secondary-container font-mono text-[10px] font-bold" id="badge-cycle-interval">3 Hours</span>
+              <button class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary-container/80 hover:bg-secondary-container text-on-secondary-container font-mono text-[11px] font-bold border border-secondary/30 transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-xs" id="btn-open-schedule-config" type="button" title="Configure irrigation schedule and pump pulse duration">
+                <span class="material-symbols-outlined text-[13px]">tune</span>
+                <span id="badge-cycle-interval">Every 3 Hours</span>
+              </button>
             </div>
 
             <!-- Crop & Season Selection Form -->
@@ -723,18 +726,24 @@
                 <span class="font-bold text-primary text-sm font-mono" id="val-crop-recovery-target">35%</span>
               </div>
               <div class="flex justify-between items-center pt-1 border-t border-outline-variant/20">
-                <span class="text-on-surface-variant">Next 3h Cycle Sample In:</span>
+                <span class="text-on-surface-variant" id="label-cycle-countdown">Next Evaluation In:</span>
                 <span class="font-mono font-bold text-tertiary" id="timer-cycle-countdown">02h 59m 59s</span>
               </div>
             </div>
           </div>
 
-          <!-- Action Buttons: Fetch Value Now & Simulate Missed Rain -->
+          <!-- Action Buttons: Set Schedule, Fetch Value Now & Simulate Missed Rain -->
           <div class="pt-3 border-t border-outline-variant/20 flex flex-wrap items-center gap-2">
+            <!-- Set Schedule Button -->
+            <button class="flex items-center gap-1.5 py-2 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface transition-all text-xs font-semibold border border-outline-variant/40 active:scale-95" id="btn-card-configure-schedule" type="button" title="Set custom schedule according to your farm's timing">
+              <span class="material-symbols-outlined text-[17px] text-primary">schedule</span>
+              <span>Set Schedule</span>
+            </button>
+
             <!-- Fetch Now Button -->
-            <button class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all text-xs font-semibold shadow-sm active:scale-95" id="btn-fetch-3h-now" type="button" title="Sample Pin 34 and evaluate 3-hour microclimate decision now">
+            <button class="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-all text-xs font-semibold shadow-sm active:scale-95" id="btn-fetch-3h-now" type="button" title="Sample Pin 34 and evaluate microclimate decision now">
               <span class="material-symbols-outlined text-[17px]">speed</span>
-              <span>Fetch Value Now</span>
+              <span>Fetch Now</span>
             </button>
 
             <!-- Test Missed Rain Recovery -->
@@ -1492,6 +1501,155 @@
     </div>
   </div>
 
+  <!-- Irrigation Schedule & Timing Configuration Modal -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden" id="modal-schedule-config">
+    <div class="bg-surface-container-lowest w-full max-w-xl rounded-2xl p-5 sm:p-6 shadow-2xl border border-outline-variant/40 transform transition-all duration-300 scale-95 opacity-0 flex flex-col max-h-[92vh] overflow-y-auto" id="modal-schedule-box">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3.5 border-b border-outline-variant/20">
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined text-[22px]">more_time</span>
+          </span>
+          <div>
+            <h3 class="font-headline font-bold text-base sm:text-lg text-on-surface">Configurable Irrigation Scheduler</h3>
+            <p class="text-xs text-on-surface-variant">Set irrigation and soil sampling times according to your custom preferences</p>
+          </div>
+        </div>
+        <button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors" id="btn-close-schedule-config" type="button">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <!-- Schedule Mode Tabs: Interval vs Daily Specific Clock Times -->
+      <div class="mt-4">
+        <label class="text-xs font-bold text-on-surface block mb-2">Schedule Timing Mode:</label>
+        <div class="grid grid-cols-2 gap-2 p-1 bg-surface-container rounded-xl">
+          <button type="button" id="tab-mode-interval" class="py-2 px-3 rounded-lg text-xs font-bold transition-all bg-surface-container-lowest text-primary shadow-xs">
+            ⏱️ Interval (Every X Hours / Mins)
+          </button>
+          <button type="button" id="tab-mode-clock" class="py-2 px-3 rounded-lg text-xs font-medium transition-all text-on-surface-variant hover:text-on-surface">
+            🕒 Daily Specific Times (e.g. 08:00, 18:00)
+          </button>
+        </div>
+      </div>
+
+      <!-- Section A: Interval Mode Panel -->
+      <div id="panel-mode-interval" class="mt-4 space-y-3">
+        <div>
+          <label class="text-xs font-semibold text-on-surface block mb-1.5">Quick Interval Presets:</label>
+          <div class="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
+            <button type="button" class="btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-medium border border-outline-variant/40 bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors text-center" data-interval-mins="15">15m</button>
+            <button type="button" class="btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-medium border border-outline-variant/40 bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors text-center" data-interval-mins="30">30m</button>
+            <button type="button" class="btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-medium border border-outline-variant/40 bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors text-center" data-interval-mins="60">1h</button>
+            <button type="button" class="btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-medium border border-outline-variant/40 bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors text-center" data-interval-mins="120">2h</button>
+            <button type="button" class="btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-bold border-2 border-primary bg-primary/10 text-primary transition-colors text-center" data-interval-mins="180">3h</button>
+            <button type="button" class="btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-medium border border-outline-variant/40 bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors text-center" data-interval-mins="360">6h</button>
+            <button type="button" class="btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-medium border border-outline-variant/40 bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors text-center" data-interval-mins="720">12h</button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 pt-1">
+          <div class="flex-1">
+            <label class="text-xs font-semibold text-on-surface block mb-1">Custom Interval Value:</label>
+            <input type="number" id="input-custom-interval-val" min="1" max="1440" value="3" class="w-full py-2 px-3 rounded-xl bg-surface-container border border-outline-variant/40 text-on-surface text-xs focus:ring-2 focus:ring-primary focus:outline-none"/>
+          </div>
+          <div class="w-32">
+            <label class="text-xs font-semibold text-on-surface block mb-1">Unit:</label>
+            <select id="select-custom-interval-unit" class="w-full py-2 px-2.5 rounded-xl bg-surface-container border border-outline-variant/40 text-on-surface text-xs focus:ring-2 focus:ring-primary focus:outline-none">
+              <option value="hours" selected>Hours</option>
+              <option value="minutes">Minutes</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section B: Daily Specific Times Mode Panel -->
+      <div id="panel-mode-clock" class="mt-4 space-y-3 hidden">
+        <div>
+          <label class="text-xs font-semibold text-on-surface block mb-1">Add Irrigation Time (Your Local Time):</label>
+          <div class="flex items-center gap-2">
+            <input type="time" id="input-schedule-clock-time" value="08:00" class="flex-1 py-2 px-3 rounded-xl bg-surface-container border border-outline-variant/40 text-on-surface text-xs font-mono focus:ring-2 focus:ring-primary focus:outline-none"/>
+            <button type="button" id="btn-add-clock-time" class="py-2 px-4 rounded-xl bg-primary text-on-primary text-xs font-semibold hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[16px]">add</span>
+              <span>Add Time</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-on-surface block mb-1.5">Scheduled Daily Times:</label>
+          <div id="list-scheduled-times" class="flex flex-wrap gap-2 p-2.5 rounded-xl bg-surface-container min-h-[48px] items-center">
+            <!-- Dynamic tags populated here -->
+          </div>
+          <div class="flex items-center gap-1.5 mt-2 text-[11px] text-on-surface-variant flex-wrap">
+            <span>Quick Presets:</span>
+            <button type="button" class="btn-time-preset underline hover:text-primary" data-times="08:00,18:00">Twice (08:00, 18:00)</button>
+            <span>•</span>
+            <button type="button" class="btn-time-preset underline hover:text-primary" data-times="07:00,13:00,19:00">Three times (07:00, 13:00, 19:00)</button>
+            <span>•</span>
+            <button type="button" class="btn-time-preset underline hover:text-primary" data-times="06:30">Morning (06:30)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section C: Pump Run Pulse Duration (Auto Cutoff Safety Watchdog) -->
+      <div class="mt-4 pt-3.5 border-t border-outline-variant/20">
+        <div class="flex items-center justify-between mb-1">
+          <label class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-emerald-500 text-[18px]">timer</span>
+            <span>Pump Run Duration (Auto-Shutoff Watchdog):</span>
+          </label>
+          <span class="font-mono font-bold text-xs text-primary px-2 py-0.5 rounded-full bg-primary/10" id="val-config-duration">5 Seconds</span>
+        </div>
+        <p class="text-[11px] text-on-surface-variant mb-2">When irrigation begins, the hardware watchdog automatically shuts OFF the relay after this duration so the pump never stays on continuously.</p>
+        <div class="flex items-center gap-3">
+          <input type="range" id="range-config-duration" min="2" max="60" step="1" value="5" class="w-full accent-primary cursor-pointer"/>
+          <span class="text-xs font-mono text-on-surface-variant w-10 text-right">60s</span>
+        </div>
+      </div>
+
+      <!-- Section D: Relay Logic / Polarity Inversion (Fixes Pump Always On) -->
+      <div class="mt-4 pt-3.5 border-t border-outline-variant/20">
+        <label class="text-xs font-bold text-on-surface block mb-1">Hardware Relay Module Polarity:</label>
+        <p class="text-[11px] text-on-surface-variant mb-2.5">If your pump turns ON when it should be OFF or stays on constantly, switch to Active-HIGH below.</p>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <label class="flex items-center gap-2 p-2.5 rounded-xl border border-outline-variant/40 bg-surface-container cursor-pointer hover:bg-surface-container-high">
+            <input type="radio" name="relay-polarity" value="low" id="radio-relay-low" checked class="accent-primary"/>
+            <div>
+              <span class="font-semibold text-on-surface block">Active-LOW (Default)</span>
+              <span class="text-[10px] text-on-surface-variant">GPIO 25 LOW = Relay ON</span>
+            </div>
+          </label>
+          <label class="flex items-center gap-2 p-2.5 rounded-xl border border-outline-variant/40 bg-surface-container cursor-pointer hover:bg-surface-container-high">
+            <input type="radio" name="relay-polarity" value="high" id="radio-relay-high" class="accent-primary"/>
+            <div>
+              <span class="font-semibold text-on-surface block">Active-HIGH (Inverted)</span>
+              <span class="text-[10px] text-on-surface-variant">GPIO 25 HIGH = Relay ON</span>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Modal Footer Action Buttons -->
+      <div class="mt-5 pt-3 border-t border-outline-variant/20 flex items-center justify-between gap-3 flex-wrap">
+        <button type="button" id="btn-test-relay-pulse" class="py-2 px-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-xs font-semibold text-on-surface border border-outline-variant/40 transition-colors flex items-center gap-1.5 active:scale-95" title="Energizes relay for 1 second to confirm wiring click">
+          <span class="material-symbols-outlined text-[16px] text-amber-500">electrical_services</span>
+          <span>Test 1s Relay Pulse</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <button type="button" id="btn-cancel-schedule" class="py-2 px-3.5 rounded-xl bg-surface-container text-xs font-semibold text-on-surface hover:bg-surface-container-high transition-colors">
+            Cancel
+          </button>
+          <button type="button" id="btn-save-schedule" class="py-2 px-4 rounded-xl bg-primary text-on-primary text-xs font-bold hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+            <span class="material-symbols-outlined text-[17px]">save</span>
+            <span>Save &amp; Sync Schedule</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Interactive JavaScript Application -->
   <script>
     // State management
@@ -1595,7 +1753,7 @@
       notify(`ESP32 Relay 1 Energized: ${state.durationSeconds}-Second Irrigation Cycle Engaged`);
 
       // Add immediate telemetry log for pump start
-      addTelemetryPacket(state.soilMoisture, "Daylight / Bright (1,240 lx)", state.predicted6h, "PUMP ACTIVE (5s)", "RELAY ON");
+      addTelemetryPacket(state.soilMoisture, isHardwareConnected ? "ESP32 GPIO 34 (Active)" : "Daylight / Bright (1,240 lx)", state.predicted6h, `PUMP ACTIVE (${state.durationSeconds}s)`, "RELAY ON");
 
       // Interval for countdown
       const timer = setInterval(() => {
@@ -1605,10 +1763,6 @@
           pumpStatusText.textContent = `PUMPING (${remaining}s)`;
         } else {
           clearInterval(timer);
-
-          if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
-            sendSerialCommand("PUMP_OFF");
-          }
 
           // Restore normal status
           pumpStatusBadge.classList.add('bg-surface-container-highest', 'text-on-surface-variant');
@@ -1621,31 +1775,48 @@
           pumpIconContainer.classList.remove('bg-primary', 'text-on-primary');
           pumpIcon?.classList.remove('animate-spin');
 
-          // Elevate soil moisture reading dynamically
-          state.soilMoisture = 54.2;
-          metricMoisture.textContent = state.soilMoisture.toFixed(1);
-          barMoisture.style.width = `${state.soilMoisture}%`;
-
-          // Recalculate 6h forecast
-          state.predicted6h = 41.8;
-          document.getElementById('metric-forecast').textContent = state.predicted6h.toFixed(1);
-          document.getElementById('bar-forecast').style.width = `${state.predicted6h}%`;
-          document.getElementById('forecast-delta').textContent = "-12.4%";
-
-          const nowDot = document.getElementById('svg-dot-now');
-          if (nowDot) nowDot.setAttribute('cy', '65');
-
-          const timeNowText = document.getElementById('chart-time-now');
-          if (timeNowText) timeNowText.textContent = `NOW (${state.soilMoisture}%)`;
-
           btnWaterText.textContent = `Manual Watering (${state.durationSeconds}s)`;
           btnManualWater.disabled = false;
           btnManualWater.classList.remove('opacity-80', 'cursor-not-allowed');
           pumpLastWatered.textContent = 'Last: Just now';
           state.isWatering = false;
 
-          notify(`Relay deactivated. Root-zone soil moisture replenished to ${state.soilMoisture}%`);
-          addTelemetryPacket(state.soilMoisture, "Daylight / Bright (1,240 lx)", state.predicted6h, "STANDBY", "MQTT 200 OK");
+          if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+            // Hardware connected: Safe shutoff + fetch live real-time sensor reading from GPIO 34
+            sendSerialCommand("PUMP_OFF");
+            setTimeout(() => {
+              sendSerialCommand("FETCH_NOW");
+            }, 600);
+            notify(`Relay deactivated. Reading real-time soil moisture from ESP32 GPIO 34...`);
+            addTelemetryPacket(state.soilMoisture, "ESP32 Hardware (Pin 34)", state.predicted6h, "STANDBY", "LIVE TELEM");
+          } else {
+            // Simulated mode: dynamic natural replenishment instead of static 54.2%
+            const addedMoist = +(Math.random() * 3 + 7.5).toFixed(1);
+            state.soilMoisture = +Math.min(92, state.soilMoisture + addedMoist).toFixed(1);
+            metricMoisture.textContent = state.soilMoisture.toFixed(1);
+            barMoisture.style.width = `${state.soilMoisture}%`;
+
+            // Recalculate 6h forecast dynamically
+            state.predicted6h = +Math.max(15, state.soilMoisture - 11.5).toFixed(1);
+            const metricForecast = document.getElementById('metric-forecast');
+            if (metricForecast) metricForecast.textContent = state.predicted6h.toFixed(1);
+            const barForecast = document.getElementById('bar-forecast');
+            if (barForecast) barForecast.style.width = `${state.predicted6h}%`;
+            const deltaEl = document.getElementById('forecast-delta');
+            if (deltaEl) deltaEl.textContent = `-${(state.soilMoisture - state.predicted6h).toFixed(1)}%`;
+
+            const nowDot = document.getElementById('svg-dot-now');
+            if (nowDot) {
+              const yPos = Math.round(280 - (state.soilMoisture * 4));
+              nowDot.setAttribute('cy', Math.max(25, Math.min(235, yPos)));
+            }
+
+            const timeNowText = document.getElementById('chart-time-now');
+            if (timeNowText) timeNowText.textContent = `NOW (${state.soilMoisture}%)`;
+
+            notify(`Relay deactivated. Root-zone soil moisture replenished to ${state.soilMoisture}%`);
+            addTelemetryPacket(state.soilMoisture, "Daylight / Bright (1,240 lx)", state.predicted6h, "STANDBY", "MQTT 200 OK");
+          }
         }
       }, 1000);
     });
@@ -1686,7 +1857,13 @@
       btnSyncTelemetry.classList.add('scale-95');
       setTimeout(() => btnSyncTelemetry.classList.remove('scale-95'), 150);
 
-      // Add a slight natural variance
+      if (isHardwareConnected && typeof sendSerialCommand === 'function') {
+        sendSerialCommand("FETCH_NOW");
+        notify("⚡ Polling live telemetry packet from ESP32 GPIO 34...");
+        return;
+      }
+
+      // Add a slight natural variance in simulated fallback mode
       const variance = (Math.random() * 0.4 - 0.2);
       state.soilMoisture = +(state.soilMoisture + variance).toFixed(1);
       metricMoisture.textContent = state.soilMoisture.toFixed(1);
@@ -2098,6 +2275,23 @@
         logToSerialTerminal("--- Connected to ESP32 @ 115200 Baud ---", "system");
 
         readSerialLoop();
+
+        // Automatically sync user's configured timing parameters to ESP32 firmware
+        setTimeout(() => {
+          if (typeof scheduleConfig !== 'undefined') {
+            if (scheduleConfig.mode === 'interval') {
+              sendSerialCommand(`INTERVAL:${scheduleConfig.intervalMins * 60}`);
+            }
+            sendSerialCommand(`DURATION:${scheduleConfig.durationSeconds}`);
+            sendSerialCommand(`RELAY_LOGIC:${scheduleConfig.relayActiveLow ? "LOW" : "HIGH"}`);
+            sendSerialCommand(`THRESHOLD:${Math.round(state.threshold)}`);
+            if (typeof weatherState !== 'undefined') {
+              sendSerialCommand(weatherState.isRainForecasted ? "RAIN_LOCKOUT:1" : "RAIN_LOCKOUT:0");
+            }
+            sendSerialCommand("FETCH_NOW");
+            notify("⚡ Synced custom schedule, watchdog duration & relay logic to ESP32!");
+          }
+        }, 1200);
       } catch (err) {
         console.error("Serial connection error:", err);
         notify("Serial connection cancelled or failed: " + err.message, true);
@@ -2383,9 +2577,18 @@
     let activeMaxMoist = 70;
     let activeRecoveryTarget = 35;
 
-    // 3-Hour Cycle Scheduler State
-    const CYCLE_DURATION_MS = 3 * 3600 * 1000; // 3 Hours
-    let nextCycleTimestamp = Date.now() + CYCLE_DURATION_MS;
+    // Configurable Cycle Scheduler State & Persistence
+    const scheduleConfig = {
+      mode: "interval",              // "interval" | "clock"
+      intervalMins: 180,             // Default: 180 minutes (3 Hours)
+      customVal: 3,
+      customUnit: "hours",
+      clockTimes: ["08:00", "14:00", "20:00"], // Specific daily times
+      durationSeconds: 5,            // Safe pump pulse duration (2-60s)
+      relayActiveLow: true           // Active-LOW vs Active-HIGH
+    };
+
+    let nextCycleTimestamp = Date.now() + (180 * 60 * 1000);
     let rainWasPredictedInPreviousWindow = false;
 
     // WMO Weather Code Map
@@ -2533,7 +2736,344 @@
       if (targetEl) targetEl.textContent = `${activeRecoveryTarget}%`;
     }
 
-    // 3-Hour Countdown Timer loop
+    // ----------------------------------------------------
+    // User-Configurable Schedule & Timing Engine
+    // ----------------------------------------------------
+    function calculateNextScheduleTimestamp() {
+      const now = new Date();
+      if (scheduleConfig.mode === 'interval') {
+        const intervalMs = (scheduleConfig.intervalMins || 180) * 60 * 1000;
+        nextCycleTimestamp = Date.now() + intervalMs;
+      } else {
+        // Daily Specific Clock Times Mode
+        const times = (scheduleConfig.clockTimes && scheduleConfig.clockTimes.length > 0)
+          ? [...scheduleConfig.clockTimes].sort()
+          : ["08:00", "14:00", "20:00"];
+
+        let nextTimeCandidate = null;
+
+        for (const t of times) {
+          const parts = t.split(':').map(Number);
+          const hh = parts[0] || 0;
+          const mm = parts[1] || 0;
+          const candidate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
+          if (candidate.getTime() > now.getTime()) {
+            nextTimeCandidate = candidate;
+            break;
+          }
+        }
+
+        if (!nextTimeCandidate) {
+          // If all times today have passed, pick first time tomorrow
+          const parts = times[0].split(':').map(Number);
+          const hh = parts[0] || 0;
+          const mm = parts[1] || 0;
+          nextTimeCandidate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, hh, mm, 0, 0);
+        }
+
+        nextCycleTimestamp = nextTimeCandidate.getTime();
+      }
+    }
+
+    function updateScheduleSummaryUI() {
+      const badge = document.getElementById('badge-cycle-interval');
+      const label = document.getElementById('label-cycle-countdown');
+      const pumpCycleInfo = document.getElementById('pump-cycle-info');
+      const btnWaterText = document.getElementById('btn-water-text');
+
+      const dur = scheduleConfig.durationSeconds || 5;
+      state.durationSeconds = dur;
+
+      if (pumpCycleInfo) pumpCycleInfo.textContent = `Auto ${dur}s cycle`;
+      if (btnWaterText && !state.isWatering) btnWaterText.textContent = `Manual Watering (${dur}s)`;
+
+      if (scheduleConfig.mode === 'interval') {
+        const mins = scheduleConfig.intervalMins || 180;
+        let summary = "";
+        if (mins < 60) {
+          summary = `Every ${mins}m`;
+        } else {
+          const hrs = +(mins / 60).toFixed(1);
+          summary = `Every ${hrs % 1 === 0 ? hrs.toFixed(0) : hrs}h`;
+        }
+        if (badge) badge.textContent = summary;
+        if (label) label.textContent = `Next Cycle (${summary}) In:`;
+      } else {
+        const count = (scheduleConfig.clockTimes || []).length;
+        const summary = `${count} Times Daily (${(scheduleConfig.clockTimes || []).slice(0, 2).join(', ')}${count > 2 ? '...' : ''})`;
+        if (badge) badge.textContent = summary;
+        if (label) label.textContent = "Next Scheduled Time In:";
+      }
+    }
+
+    function loadScheduleConfig() {
+      try {
+        const saved = localStorage.getItem('leafy_schedule_config');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          Object.assign(scheduleConfig, parsed);
+        }
+      } catch (e) {
+        console.warn("Could not load schedule config from localStorage", e);
+      }
+      calculateNextScheduleTimestamp();
+      updateScheduleSummaryUI();
+    }
+
+    function saveScheduleConfig() {
+      try {
+        localStorage.setItem('leafy_schedule_config', JSON.stringify(scheduleConfig));
+      } catch (e) {
+        console.warn("Could not save schedule config to localStorage", e);
+      }
+      calculateNextScheduleTimestamp();
+      updateScheduleSummaryUI();
+
+      // Dispatch to ESP32 if connected
+      if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+        if (scheduleConfig.mode === 'interval') {
+          sendSerialCommand(`INTERVAL:${scheduleConfig.intervalMins * 60}`);
+        }
+        sendSerialCommand(`DURATION:${scheduleConfig.durationSeconds}`);
+        sendSerialCommand(`RELAY_LOGIC:${scheduleConfig.relayActiveLow ? "LOW" : "HIGH"}`);
+        notify("⚡ Configured timing parameters synchronized with ESP32 firmware!");
+      }
+    }
+
+    // Modal UI Handlers for Custom Schedule
+    function initScheduleModal() {
+      setupModal('btn-open-schedule-config', 'modal-schedule-config', 'modal-schedule-box', ['btn-close-schedule-config', 'btn-cancel-schedule']);
+
+      const cardBtn = document.getElementById('btn-card-configure-schedule');
+      const openModalDirect = () => {
+        const modal = document.getElementById('modal-schedule-config');
+        const box = document.getElementById('modal-schedule-box');
+        modal?.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          box?.classList.remove('scale-95', 'opacity-0');
+          box?.classList.add('scale-100', 'opacity-100');
+        });
+        syncScheduleModalFields();
+      };
+
+      cardBtn?.addEventListener('click', openModalDirect);
+      document.getElementById('btn-open-schedule-config')?.addEventListener('click', syncScheduleModalFields);
+
+      // Mode Switch Tabs
+      const tabInterval = document.getElementById('tab-mode-interval');
+      const tabClock = document.getElementById('tab-mode-clock');
+      const panelInterval = document.getElementById('panel-mode-interval');
+      const panelClock = document.getElementById('panel-mode-clock');
+
+      const setMode = (mode) => {
+        scheduleConfig.mode = mode;
+        if (mode === 'interval') {
+          tabInterval?.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+          tabInterval?.classList.remove('text-on-surface-variant');
+          tabClock?.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+          tabClock?.classList.add('text-on-surface-variant');
+          panelInterval?.classList.remove('hidden');
+          panelClock?.classList.add('hidden');
+        } else {
+          tabClock?.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+          tabClock?.classList.remove('text-on-surface-variant');
+          tabInterval?.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+          tabInterval?.classList.add('text-on-surface-variant');
+          panelClock?.classList.remove('hidden');
+          panelInterval?.classList.add('hidden');
+        }
+      };
+
+      tabInterval?.addEventListener('click', () => setMode('interval'));
+      tabClock?.addEventListener('click', () => setMode('clock'));
+
+      // Interval Presets
+      document.querySelectorAll('.btn-interval-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const mins = parseInt(btn.dataset.intervalMins);
+          scheduleConfig.intervalMins = mins;
+          if (mins >= 60 && mins % 60 === 0) {
+            scheduleConfig.customVal = mins / 60;
+            scheduleConfig.customUnit = "hours";
+          } else {
+            scheduleConfig.customVal = mins;
+            scheduleConfig.customUnit = "minutes";
+          }
+          syncScheduleModalFields();
+        });
+      });
+
+      // Custom Interval Inputs
+      const customValInput = document.getElementById('input-custom-interval-val');
+      const customUnitSelect = document.getElementById('select-custom-interval-unit');
+
+      const updateCustomInterval = () => {
+        const val = Math.max(1, parseInt(customValInput.value) || 1);
+        const unit = customUnitSelect.value;
+        scheduleConfig.customVal = val;
+        scheduleConfig.customUnit = unit;
+        scheduleConfig.intervalMins = unit === 'hours' ? val * 60 : val;
+        highlightIntervalPreset(scheduleConfig.intervalMins);
+      };
+
+      customValInput?.addEventListener('input', updateCustomInterval);
+      customUnitSelect?.addEventListener('change', updateCustomInterval);
+
+      // Duration Slider
+      const rangeDur = document.getElementById('range-config-duration');
+      const valDur = document.getElementById('val-config-duration');
+      rangeDur?.addEventListener('input', (e) => {
+        const v = parseInt(e.target.value);
+        scheduleConfig.durationSeconds = v;
+        if (valDur) valDur.textContent = `${v} Second${v === 1 ? '' : 's'}`;
+      });
+
+      // Clock Times Add Button
+      const inputClock = document.getElementById('input-schedule-clock-time');
+      document.getElementById('btn-add-clock-time')?.addEventListener('click', () => {
+        const t = inputClock.value.trim();
+        if (/^\d{2}:\d{2}$/.test(t)) {
+          if (!scheduleConfig.clockTimes.includes(t)) {
+            scheduleConfig.clockTimes.push(t);
+            scheduleConfig.clockTimes.sort();
+            renderClockTimesTags();
+          } else {
+            notify(`Time ${t} is already in your schedule.`);
+          }
+        }
+      });
+
+      // Clock Times Presets
+      document.querySelectorAll('.btn-time-preset').forEach(btn => {
+        btn.addEventListener('click', () => {
+          scheduleConfig.clockTimes = btn.dataset.times.split(',');
+          renderClockTimesTags();
+        });
+      });
+
+      // Relay Polarity Radio Buttons
+      const radioLow = document.getElementById('radio-relay-low');
+      const radioHigh = document.getElementById('radio-relay-high');
+      radioLow?.addEventListener('change', () => {
+        if (radioLow.checked) scheduleConfig.relayActiveLow = true;
+      });
+      radioHigh?.addEventListener('change', () => {
+        if (radioHigh.checked) scheduleConfig.relayActiveLow = false;
+      });
+
+      // Test 1s Relay Pulse Button
+      document.getElementById('btn-test-relay-pulse')?.addEventListener('click', () => {
+        if (isHardwareConnected && typeof sendSerialCommand === 'function') {
+          notify("⚡ Testing 1-second relay pulse on GPIO 25...");
+          sendSerialCommand("PUMP_ON");
+          setTimeout(() => {
+            sendSerialCommand("PUMP_OFF");
+            notify("✅ Relay 1-second test pulse complete.");
+          }, 1000);
+        } else {
+          notify("Simulating 1-second relay test pulse. Connect ESP32 via USB Serial to test hardware.");
+          setPumpUIState(true);
+          setTimeout(() => setPumpUIState(false), 1000);
+        }
+      });
+
+      // Save Schedule Button
+      document.getElementById('btn-save-schedule')?.addEventListener('click', () => {
+        saveScheduleConfig();
+        const modal = document.getElementById('modal-schedule-config');
+        const box = document.getElementById('modal-schedule-box');
+        box?.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => modal?.classList.add('hidden'), 200);
+        notify("✅ Custom irrigation schedule saved & activated!");
+      });
+    }
+
+    function syncScheduleModalFields() {
+      // Set Mode
+      const isInterval = scheduleConfig.mode === 'interval';
+      const tabInterval = document.getElementById('tab-mode-interval');
+      const tabClock = document.getElementById('tab-mode-clock');
+      const panelInterval = document.getElementById('panel-mode-interval');
+      const panelClock = document.getElementById('panel-mode-clock');
+
+      if (isInterval) {
+        tabInterval?.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+        tabInterval?.classList.remove('text-on-surface-variant');
+        tabClock?.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+        tabClock?.classList.add('text-on-surface-variant');
+        panelInterval?.classList.remove('hidden');
+        panelClock?.classList.add('hidden');
+      } else {
+        tabClock?.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+        tabClock?.classList.remove('text-on-surface-variant');
+        tabInterval?.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-xs');
+        tabInterval?.classList.add('text-on-surface-variant');
+        panelClock?.classList.remove('hidden');
+        panelInterval?.classList.add('hidden');
+      }
+
+      // Interval Values
+      const customValInput = document.getElementById('input-custom-interval-val');
+      const customUnitSelect = document.getElementById('select-custom-interval-unit');
+      if (customValInput) customValInput.value = scheduleConfig.customVal || 3;
+      if (customUnitSelect) customUnitSelect.value = scheduleConfig.customUnit || "hours";
+      highlightIntervalPreset(scheduleConfig.intervalMins);
+
+      // Duration Slider
+      const rangeDur = document.getElementById('range-config-duration');
+      const valDur = document.getElementById('val-config-duration');
+      const dur = scheduleConfig.durationSeconds || 5;
+      if (rangeDur) rangeDur.value = dur;
+      if (valDur) valDur.textContent = `${dur} Second${dur === 1 ? '' : 's'}`;
+
+      // Clock Times Tags
+      renderClockTimesTags();
+
+      // Relay Polarity
+      const radioLow = document.getElementById('radio-relay-low');
+      const radioHigh = document.getElementById('radio-relay-high');
+      if (radioLow) radioLow.checked = scheduleConfig.relayActiveLow;
+      if (radioHigh) radioHigh.checked = !scheduleConfig.relayActiveLow;
+    }
+
+    function highlightIntervalPreset(mins) {
+      document.querySelectorAll('.btn-interval-preset').forEach(btn => {
+        const btnMins = parseInt(btn.dataset.intervalMins);
+        if (btnMins === mins) {
+          btn.className = "btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-bold border-2 border-primary bg-primary/10 text-primary transition-colors text-center";
+        } else {
+          btn.className = "btn-interval-preset py-1.5 px-2 rounded-lg text-xs font-mono font-medium border border-outline-variant/40 bg-surface-container hover:bg-surface-container-high text-on-surface transition-colors text-center";
+        }
+      });
+    }
+
+    function renderClockTimesTags() {
+      const container = document.getElementById('list-scheduled-times');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (!scheduleConfig.clockTimes || scheduleConfig.clockTimes.length === 0) {
+        container.innerHTML = '<span class="text-xs text-on-surface-variant italic">No clock times added yet. Add one above.</span>';
+        return;
+      }
+
+      scheduleConfig.clockTimes.forEach((timeStr, idx) => {
+        const tag = document.createElement('span');
+        tag.className = "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-container-high text-on-surface text-xs font-mono font-bold border border-outline-variant/30";
+        tag.innerHTML = `
+          <span>${timeStr}</span>
+          <button type="button" class="w-4 h-4 rounded-full hover:bg-error/20 hover:text-error flex items-center justify-center transition-colors text-on-surface-variant font-bold text-[13px] leading-none" data-idx="${idx}" title="Remove time">×</button>
+        `;
+        tag.querySelector('button').addEventListener('click', (e) => {
+          e.stopPropagation();
+          scheduleConfig.clockTimes.splice(idx, 1);
+          renderClockTimesTags();
+        });
+        container.appendChild(tag);
+      });
+    }
+
+    // Dynamic Countdown Timer loop
     setInterval(() => {
       const now = Date.now();
       const diff = Math.max(0, nextCycleTimestamp - now);
@@ -2547,17 +3087,17 @@
         timerEl.textContent = `${String(hours).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m ${String(secs).padStart(2, '0')}s`;
       }
 
-      // When 3-hour timer hits 0: execute cycle!
-      if (diff === 0) {
-        execute3HourCycle();
+      // When countdown hits 0: execute scheduled evaluation!
+      if (diff === 0 && !state.isWatering) {
+        executeScheduledCycle();
       }
     }, 1000);
 
-    // Core 3-Hour Evaluation Function
-    function execute3HourCycle(isManualTrigger = false) {
-      nextCycleTimestamp = Date.now() + CYCLE_DURATION_MS;
+    // Core Irrigation Cycle Evaluation Function
+    function executeScheduledCycle(isManualTrigger = false) {
+      calculateNextScheduleTimestamp();
 
-      // Request fresh reading from ESP32 if connected
+      // Request fresh live reading from ESP32 if connected
       if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
         sendSerialCommand("FETCH_NOW");
       }
@@ -2565,7 +3105,7 @@
       // Check for Missed-Rain Condition:
       // If rain was forecast in previous window, but moisture is STILL low (it didn't rain):
       if (rainWasPredictedInPreviousWindow && state.soilMoisture < activeRecoveryTarget) {
-        engageMissedRainRecovery("Scheduled 3h window passed with 0 mm rainfall.");
+        engageMissedRainRecovery("Scheduled cycle elapsed with 0 mm rainfall.");
         rainWasPredictedInPreviousWindow = false;
         return;
       }
@@ -2576,16 +3116,16 @@
       // Standard evaluation
       if (state.soilMoisture < state.threshold) {
         if (weatherState.isRainForecasted) {
-          notify(`🌧️ Rain Lockout: Moisture is ${state.soilMoisture.toFixed(1)}%, but rain is forecast in next 3h (${weatherState.rainProbNext3h}%). Pump held OFF to save water.`);
+          notify(`🌧️ Rain Lockout: Moisture is ${state.soilMoisture.toFixed(1)}%, but rain is forecast in next 3h (${weatherState.rainProbNext3h}% chance). Pump held OFF to save water.`);
           if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
             sendSerialCommand("RAIN_LOCKOUT:1");
           }
         } else {
-          notify(`💧 3h Scheduled Cycle: Soil is dry (${state.soilMoisture.toFixed(1)}%). Engaging irrigation cycle.`);
+          notify(`💧 Scheduled Cycle: Soil is dry (${state.soilMoisture.toFixed(1)}% < ${state.threshold}%). Engaging ${state.durationSeconds}s irrigation cycle.`);
           btnManualWater?.click();
         }
       } else {
-        notify(`🌱 3h Scheduled Cycle: Soil moisture is nominal (${state.soilMoisture.toFixed(1)}%). No irrigation needed.`);
+        notify(`🌱 Scheduled Cycle: Soil moisture is nominal (${state.soilMoisture.toFixed(1)}%). No irrigation needed.`);
       }
     }
 
@@ -2621,8 +3161,8 @@
 
     // Button Listeners
     document.getElementById('btn-fetch-3h-now')?.addEventListener('click', () => {
-      notify("⚡ Executing On-Demand 3-Hour Microclimate & Moisture Evaluation...");
-      execute3HourCycle(true);
+      notify("⚡ Executing On-Demand Microclimate & Soil Moisture Evaluation...");
+      executeScheduledCycle(true);
     });
 
     document.getElementById('btn-test-missed-rain')?.addEventListener('click', () => {
@@ -2661,9 +3201,11 @@
       fetchLiveWeather();
     });
 
-    // Initial weather fetch & crop setup
+    // Initial weather fetch, crop setup & configurable scheduler
     updateCropSeasonalLimits();
     fetchLiveWeather();
+    loadScheduleConfig();
+    initScheduleModal();
   </script>
 </body>
 </html>
