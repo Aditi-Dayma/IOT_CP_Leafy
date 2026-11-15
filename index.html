@@ -254,10 +254,16 @@
 
       <!-- Action & Status Controls -->
       <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Connect Hardware Button (Web Serial API) -->
+        <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white transition-all text-xs font-semibold shadow-sm active:scale-95 border border-emerald-500/30" id="btn-connect-hardware" type="button" title="Connect physical ESP32 via USB Serial (115200 baud)">
+          <span class="material-symbols-outlined text-[17px]">usb</span>
+          <span id="btn-connect-hw-text">Connect ESP32</span>
+        </button>
+
         <!-- Node status pill -->
-        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary-container/70 text-on-secondary-container border border-emerald-400/20 text-xs font-medium">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span id="header-status-text">ESP32: Online (12ms)</span>
+        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-secondary-container/70 text-on-secondary-container border border-emerald-400/20 text-xs font-medium" id="header-node-status-badge">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" id="header-status-dot"></span>
+          <span id="header-status-text">ESP32: Ready (115200)</span>
         </div>
 
         <!-- Sync Button -->
@@ -402,6 +408,12 @@
             <span class="material-symbols-outlined text-[15px]">memory</span>
             <span>FastAPI v0.110 • XGBoost Edge Runner</span>
           </div>
+
+          <!-- Hardware Pin Configuration & Serial Monitor Pill -->
+          <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-mono transition-colors border border-outline-variant/30 active:scale-95 cursor-pointer" id="btn-open-serial-monitor" type="button" title="Click to open Live ESP32 Serial Monitor">
+            <span class="material-symbols-outlined text-[15px] text-emerald-500">terminal</span>
+            <span id="hardware-connection-text">Pin 34: Soil • Pin 25: Relay</span>
+          </button>
         </div>
 
         <!-- Action CTAs -->
@@ -449,10 +461,10 @@
           </div>
 
           <div class="flex items-center justify-between text-on-surface-variant text-xs pt-1 border-t border-outline-variant/20">
-            <span>Optimal: 35% – 65%</span>
+            <span id="metric-raw-adc">Raw ADC: 3120 (Pin 34)</span>
             <span class="inline-flex items-center gap-1 font-semibold text-primary" id="moisture-status-pill">
               <span class="material-symbols-outlined text-[15px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
-              <span>Nominal</span>
+              <span id="moisture-status-text">Nominal</span>
             </span>
           </div>
         </div>
@@ -1255,6 +1267,64 @@
     </div>
   </div>
 
+  <!-- Live Hardware Serial Monitor Modal (ESP32 Web Serial) -->
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden" id="modal-serial-monitor">
+    <div class="bg-surface-container-lowest w-full max-w-2xl rounded-2xl p-5 shadow-2xl border border-outline-variant/40 transform transition-all duration-300 scale-95 opacity-0 flex flex-col max-h-[90vh]" id="modal-serial-box">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+        <div class="flex items-center gap-2.5">
+          <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[20px]">terminal</span>
+          </span>
+          <div>
+            <h3 class="font-headline font-bold text-base text-on-surface flex items-center gap-2">
+              <span>ESP32 Hardware Serial Monitor</span>
+              <span class="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-mono text-[10px]" id="modal-serial-baud">115200 Baud</span>
+            </h3>
+            <p class="text-[11px] text-on-surface-variant">Live bi-directional communication with GPIO 34 (Soil) &amp; GPIO 25 (Relay)</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-medium transition-colors" id="btn-clear-serial" type="button">
+            Clear
+          </button>
+          <button class="w-8 h-8 rounded-lg hover:bg-surface-container text-on-surface-variant flex items-center justify-center transition-colors" id="btn-close-serial" type="button">
+            <span class="material-symbols-outlined text-[20px]">close</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Pinout & Calibration Banner -->
+      <div class="my-2.5 py-1.5 px-3 rounded-xl bg-surface-container-low text-[11px] flex flex-wrap items-center justify-between gap-2 font-mono text-on-surface-variant">
+        <span>Soil Pin: <strong class="text-on-surface">GPIO 34</strong> (Dry: 4095, Wet: 1800)</span>
+        <span>Relay Pin: <strong class="text-on-surface">GPIO 25</strong> (Active-LOW)</span>
+        <span id="terminal-conn-status" class="text-amber-500 font-semibold">● Disconnected</span>
+      </div>
+
+      <!-- Black Terminal Box -->
+      <div class="w-full flex-1 min-h-[260px] max-h-[360px] bg-slate-950 text-emerald-400 p-3.5 rounded-xl font-mono text-xs overflow-y-auto space-y-1 select-text border border-slate-800 shadow-inner" id="serial-terminal-logs">
+        <div class="text-slate-500 text-[11px]">/* Leafy Hardware Serial Monitor Initialized. Click 'Connect ESP32' to start live stream. */</div>
+      </div>
+
+      <!-- Quick Command Shortcut Chips -->
+      <div class="pt-2.5 flex flex-wrap items-center gap-1.5 text-xs">
+        <span class="text-on-surface-variant text-[11px] font-medium mr-1">Quick Send:</span>
+        <button class="px-2 py-0.5 rounded-md bg-surface-container hover:bg-surface-container-high font-mono text-[11px] text-on-surface transition-colors chip-cmd" data-cmd="PUMP_ON" type="button">PUMP_ON (5s)</button>
+        <button class="px-2 py-0.5 rounded-md bg-surface-container hover:bg-surface-container-high font-mono text-[11px] text-on-surface transition-colors chip-cmd" data-cmd="PUMP_OFF" type="button">PUMP_OFF</button>
+        <button class="px-2 py-0.5 rounded-md bg-surface-container hover:bg-surface-container-high font-mono text-[11px] text-on-surface transition-colors chip-cmd" data-cmd="THRESHOLD:35" type="button">THRESHOLD:35</button>
+        <button class="px-2 py-0.5 rounded-md bg-surface-container hover:bg-surface-container-high font-mono text-[11px] text-on-surface transition-colors chip-cmd" data-cmd="SYNC" type="button">SYNC / PING</button>
+      </div>
+
+      <!-- Command Input & Send -->
+      <div class="pt-2.5 mt-1 border-t border-outline-variant/20 flex items-center gap-2">
+        <input type="text" id="input-serial-cmd" class="flex-1 py-2 px-3 rounded-xl bg-surface-container border border-outline-variant/40 font-mono text-xs text-on-surface focus:ring-2 focus:ring-primary focus:outline-none placeholder-slate-400" placeholder="Type serial command (e.g. PUMP_ON, PUMP_OFF, THRESHOLD:40)..."/>
+        <button class="px-4 py-2 rounded-xl bg-primary text-on-primary font-semibold text-xs hover:bg-primary-container hover:text-on-primary-container transition-colors shrink-0" id="btn-send-serial-cmd" type="button">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Interactive JavaScript Application -->
   <script>
     // State management
@@ -1351,6 +1421,10 @@
       pumpIconContainer.classList.add('bg-primary', 'text-on-primary');
       pumpIcon?.classList.add('animate-spin');
 
+      if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+        sendSerialCommand("PUMP_ON");
+      }
+
       notify(`ESP32 Relay 1 Energized: ${state.durationSeconds}-Second Irrigation Cycle Engaged`);
 
       // Add immediate telemetry log for pump start
@@ -1364,6 +1438,10 @@
           pumpStatusText.textContent = `PUMPING (${remaining}s)`;
         } else {
           clearInterval(timer);
+
+          if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+            sendSerialCommand("PUMP_OFF");
+          }
 
           // Restore normal status
           pumpStatusBadge.classList.add('bg-surface-container-highest', 'text-on-surface-variant');
@@ -1506,9 +1584,9 @@
       }
     }
 
-    // Auto Packet Generation every 30 seconds
+    // Auto Packet Generation every 30 seconds (simulation fallback when hardware is not connected)
     setInterval(() => {
-      if (state.isWatering) return;
+      if (isHardwareConnected || state.isWatering) return;
       // Slight natural decay for evaporation
       state.soilMoisture = +(Math.max(25, state.soilMoisture - 0.05)).toFixed(2);
       metricMoisture.textContent = state.soilMoisture.toFixed(1);
@@ -1590,6 +1668,10 @@
         document.getElementById('plan-duration').textContent = `${state.durationSeconds} Seconds`;
         document.getElementById('btn-water-text').textContent = `Manual Watering (${state.durationSeconds}s)`;
         document.getElementById('pump-cycle-info').textContent = `Auto ${state.durationSeconds}s cycle`;
+      }
+
+      if (typeof sendSerialCommand === 'function' && isHardwareConnected) {
+        sendSerialCommand(`THRESHOLD:${Math.round(state.threshold)}`);
       }
 
       mlModal.close();
@@ -1757,6 +1839,317 @@
       closeProfileDropdown();
       notify('Operator Terminal Locked. Re-authenticate to access edge pump overrides.', true);
     });
+
+    // ==========================================
+    // ESP32 Web Serial Hardware Bridge
+    // Integrates directly with IDE_Code.ino on Pin 34 (Soil) and Pin 25 (Relay)
+    // ==========================================
+    let serialPort = null;
+    let serialReader = null;
+    let serialWriter = null;
+    let isHardwareConnected = false;
+
+    const btnConnectHw = document.getElementById('btn-connect-hardware');
+    const btnConnectHwText = document.getElementById('btn-connect-hw-text');
+    const headerStatusText = document.getElementById('header-status-text');
+    const headerStatusDot = document.getElementById('header-status-dot');
+    const hardwareConnText = document.getElementById('hardware-connection-text');
+    const metricRawAdc = document.getElementById('metric-raw-adc');
+    const serialLogsContainer = document.getElementById('serial-terminal-logs');
+    const terminalConnStatus = document.getElementById('terminal-conn-status');
+    const inputSerialCmd = document.getElementById('input-serial-cmd');
+    const btnSendSerialCmd = document.getElementById('btn-send-serial-cmd');
+
+    // Setup Serial Monitor Modal
+    setupModal('btn-open-serial-monitor', 'modal-serial-monitor', 'modal-serial-box', ['btn-close-serial']);
+
+    // Clear Serial Logs
+    document.getElementById('btn-clear-serial')?.addEventListener('click', () => {
+      if (serialLogsContainer) serialLogsContainer.innerHTML = '';
+      logToSerialTerminal("Console cleared.", "system");
+    });
+
+    // Quick Command Chips
+    document.querySelectorAll('.chip-cmd').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const cmd = chip.dataset.cmd;
+        if (inputSerialCmd) inputSerialCmd.value = cmd;
+        sendSerialCommand(cmd);
+      });
+    });
+
+    // Send Command via Input
+    btnSendSerialCmd?.addEventListener('click', () => {
+      if (inputSerialCmd && inputSerialCmd.value.trim().length > 0) {
+        sendSerialCommand(inputSerialCmd.value.trim());
+        inputSerialCmd.value = '';
+      }
+    });
+
+    inputSerialCmd?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        btnSendSerialCmd?.click();
+      }
+    });
+
+    // Connect / Disconnect button
+    btnConnectHw?.addEventListener('click', async () => {
+      if (isHardwareConnected) {
+        await disconnectHardwareSerial();
+      } else {
+        await connectHardwareSerial();
+      }
+    });
+
+    async function connectHardwareSerial() {
+      if (!("serial" in navigator)) {
+        notify("Web Serial API is not supported in this browser. Please open in Google Chrome, Microsoft Edge, or Opera.", true);
+        return;
+      }
+
+      try {
+        notify("Requesting ESP32 Serial Port (Select your USB/COM port)...");
+        serialPort = await navigator.serial.requestPort();
+        await serialPort.open({ baudRate: 115200 });
+
+        isHardwareConnected = true;
+        btnConnectHw.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+        btnConnectHw.classList.add('bg-red-600', 'hover:bg-red-700');
+        btnConnectHwText.textContent = "Disconnect";
+
+        headerStatusText.textContent = "ESP32: Live Hardware (115200)";
+        headerStatusDot.classList.remove('bg-emerald-500');
+        headerStatusDot.classList.add('bg-emerald-400', 'animate-ping');
+        if (hardwareConnText) hardwareConnText.innerHTML = "<span class='text-emerald-500 font-bold'>COM Connected (Pin 34 &amp; 25)</span>";
+        if (terminalConnStatus) {
+          terminalConnStatus.className = "text-emerald-400 font-semibold";
+          terminalConnStatus.textContent = "● Connected (115200 Baud)";
+        }
+
+        notify("🟢 ESP32 Connected! Live Telemetry Streaming from Pin 34");
+        logToSerialTerminal("--- Connected to ESP32 @ 115200 Baud ---", "system");
+
+        readSerialLoop();
+      } catch (err) {
+        console.error("Serial connection error:", err);
+        notify("Serial connection cancelled or failed: " + err.message, true);
+      }
+    }
+
+    async function disconnectHardwareSerial() {
+      try {
+        if (serialReader) {
+          await serialReader.cancel();
+          serialReader.releaseLock();
+          serialReader = null;
+        }
+        if (serialWriter) {
+          serialWriter.releaseLock();
+          serialWriter = null;
+        }
+        if (serialPort) {
+          await serialPort.close();
+          serialPort = null;
+        }
+      } catch (err) {
+        console.error("Disconnect error:", err);
+      }
+
+      isHardwareConnected = false;
+      btnConnectHw.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+      btnConnectHw.classList.remove('bg-red-600', 'hover:bg-red-700');
+      btnConnectHwText.textContent = "Connect ESP32";
+
+      headerStatusText.textContent = "ESP32: Ready (115200)";
+      headerStatusDot.classList.add('bg-emerald-500');
+      headerStatusDot.classList.remove('animate-ping');
+      if (hardwareConnText) hardwareConnText.textContent = "Pin 34: Soil • Pin 25: Relay";
+      if (terminalConnStatus) {
+        terminalConnStatus.className = "text-amber-500 font-semibold";
+        terminalConnStatus.textContent = "● Disconnected";
+      }
+
+      notify("ESP32 Serial Disconnected. Switched to standby mode.");
+      logToSerialTerminal("--- Disconnected from ESP32 ---", "system");
+    }
+
+    async function readSerialLoop() {
+      const textDecoder = new TextDecoderStream();
+      const readableStreamClosed = serialPort.readable.pipeTo(textDecoder.writable);
+      serialReader = textDecoder.readable.getReader();
+      let buffer = "";
+
+      try {
+        while (true) {
+          const { value, done } = await serialReader.read();
+          if (done) break;
+          if (value) {
+            buffer += value;
+            const lines = buffer.split("\n");
+            buffer = lines.pop(); // Keep trailing incomplete segment
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (trimmed.length > 0) {
+                handleIncomingSerialLine(trimmed);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.warn("Serial stream closed or interrupted:", err);
+      } finally {
+        if (serialReader) serialReader.releaseLock();
+      }
+    }
+
+    async function sendSerialCommand(cmd) {
+      if (!serialPort || !serialPort.writable) {
+        notify("ESP32 is not connected via USB Serial. Click 'Connect ESP32' first.", true);
+        return;
+      }
+      try {
+        const encoder = new TextEncoder();
+        const writer = serialPort.writable.getWriter();
+        await writer.write(encoder.encode(cmd + "\n"));
+        writer.releaseLock();
+        logToSerialTerminal(">> " + cmd, "tx");
+      } catch (err) {
+        console.error("Failed to send serial command:", err);
+        notify("Error writing to Serial: " + err.message, true);
+      }
+    }
+
+    function handleIncomingSerialLine(line) {
+      logToSerialTerminal(line, "rx");
+
+      // 1. Check for JSON format: JSON:{"raw":2450,"moisture":48,"pump":0,"threshold":35}
+      if (line.includes("JSON:")) {
+        try {
+          const jsonStr = line.substring(line.indexOf("JSON:") + 5);
+          const data = JSON.parse(jsonStr);
+          applyHardwareTelemetry(data.raw, data.moisture, data.pump === 1, data.threshold);
+          return;
+        } catch (e) {
+          console.error("JSON parse error:", e);
+        }
+      }
+
+      // 2. Check for human-readable format: "Raw Value: 3120 | Moisture: 43%"
+      const matchMoisture = line.match(/Raw\s*Value:\s*(\d+)\s*\|\s*Moisture:\s*([\d\.]+)%/i);
+      if (matchMoisture) {
+        const rawVal = parseInt(matchMoisture[1]);
+        const moistureVal = parseFloat(matchMoisture[2]);
+        applyHardwareTelemetry(rawVal, moistureVal);
+      }
+
+      // 3. Check for pump status: "Status: Soil is DRY (< 35%) -> Pump ON" or "Status: Pump is ON/OFF"
+      if (line.includes("Pump ON") || line.includes("Pump is ON")) {
+        setPumpUIState(true);
+      } else if (line.includes("Pump OFF") || line.includes("Pump is OFF")) {
+        setPumpUIState(false);
+      }
+    }
+
+    function applyHardwareTelemetry(raw, moisture, isPumpOn = null, threshold = null) {
+      state.soilMoisture = moisture;
+      metricMoisture.textContent = moisture.toFixed(1);
+      barMoisture.style.width = `${moisture}%`;
+
+      if (metricRawAdc) {
+        metricRawAdc.textContent = `Raw ADC: ${raw} (Pin 34)`;
+      }
+
+      // Moisture status badge
+      const statusPill = document.getElementById('moisture-status-pill');
+      const statusText = document.getElementById('moisture-status-text');
+      const thresh = threshold || state.threshold;
+
+      if (moisture < thresh) {
+        if (statusPill) {
+          statusPill.classList.remove('text-primary');
+          statusPill.classList.add('text-error');
+        }
+        if (statusText) statusText.textContent = `DRY (< ${thresh}%)`;
+      } else {
+        if (statusPill) {
+          statusPill.classList.remove('text-error');
+          statusPill.classList.add('text-primary');
+        }
+        if (statusText) statusText.textContent = "Nominal";
+      }
+
+      // If pump state provided
+      if (isPumpOn !== null) {
+        setPumpUIState(isPumpOn);
+      }
+
+      // Update SVG chart dot
+      const nowDot = document.getElementById('svg-dot-now');
+      if (nowDot) {
+        // scale: 60% = 40y, 30% = 160y, 0% = 280y
+        const yPos = Math.round(280 - (moisture * 4));
+        nowDot.setAttribute('cy', Math.max(25, Math.min(235, yPos)));
+      }
+
+      const timeNowText = document.getElementById('chart-time-now');
+      if (timeNowText) timeNowText.textContent = `NOW (${moisture.toFixed(1)}%)`;
+
+      // Log to live table with "HW SENSOR (Pin 34)" badge
+      addTelemetryPacket(
+        moisture, 
+        `ESP32 Hardware (ADC: ${raw})`, 
+        state.predicted6h, 
+        pumpStatusText.textContent.includes('PUMPING') ? 'PUMP ACTIVE' : 'STANDBY', 
+        'HW SERIAL 200'
+      );
+    }
+
+    function setPumpUIState(isOn) {
+      if (isOn) {
+        pumpStatusBadge.classList.remove('bg-surface-container-highest', 'text-on-surface-variant');
+        pumpStatusBadge.classList.add('bg-primary-container', 'text-on-primary-container');
+        pumpStatusDot.classList.remove('bg-on-surface-variant');
+        pumpStatusDot.classList.add('bg-on-primary-container', 'animate-ping');
+        pumpStatusText.textContent = 'PUMPING (ON)';
+        pumpIconContainer.classList.remove('bg-surface-container-high', 'text-on-surface-variant');
+        pumpIconContainer.classList.add('bg-primary', 'text-on-primary');
+        pumpIcon?.classList.add('animate-spin');
+      } else {
+        pumpStatusBadge.classList.add('bg-surface-container-highest', 'text-on-surface-variant');
+        pumpStatusBadge.classList.remove('bg-primary-container', 'text-on-primary-container');
+        pumpStatusDot.classList.add('bg-on-surface-variant');
+        pumpStatusDot.classList.remove('bg-on-primary-container', 'animate-ping');
+        pumpStatusText.textContent = 'STANDBY (OFF)';
+        pumpIconContainer.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+        pumpIconContainer.classList.remove('bg-primary', 'text-on-primary');
+        pumpIcon?.classList.remove('animate-spin');
+      }
+    }
+
+    function logToSerialTerminal(msg, type = "rx") {
+      if (!serialLogsContainer) return;
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+
+      const line = document.createElement('div');
+      line.className = "py-0.5 leading-relaxed font-mono text-[11px] select-text break-all";
+
+      if (type === "system") {
+        line.className += " text-amber-400 font-semibold";
+        line.textContent = `[${time}] ${msg}`;
+      } else if (type === "tx") {
+        line.className += " text-cyan-400 font-bold";
+        line.textContent = `[${time}] ${msg}`;
+      } else {
+        line.className += " text-emerald-400";
+        line.textContent = `[${time}] ${msg}`;
+      }
+
+      serialLogsContainer.appendChild(line);
+      serialLogsContainer.scrollTop = serialLogsContainer.scrollHeight;
+    }
   </script>
 </body>
 </html>

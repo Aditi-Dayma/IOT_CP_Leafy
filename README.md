@@ -86,15 +86,54 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
+## 🔌 Hardware Connection Guide (ESP32 Integration)
+
+Your hardware code in [`IDE_Code/IDE_Code.ino`](IDE_Code/IDE_Code.ino) connects directly with this dashboard using the **Web Serial API** (built into modern browsers like Google Chrome, Microsoft Edge, and Opera).
+
+### Hardware Wiring
+
+| ESP32 Pin | Hardware Component | Logic / Calibration |
+|---|---|---|
+| **GPIO 34** | Capacitive Soil Moisture Sensor v1.2 (AOUT) | Analog ADC (Air/Dry: `4095`, Wet Soil: `1800`) |
+| **GPIO 25** | 5V Relay Channel 1 (Submersible DC Pump) | Active-`LOW` (`LOW` = Pump ON, `HIGH` = Pump OFF) |
+| **3.3V / 5V** | Sensor VCC / Relay VCC | Power Rail |
+| **GND** | Sensor GND / Relay GND / DC Power Common | Ground Reference |
+
+---
+
+### How to Connect Hardware to Dashboard
+
+1. **Flash Firmware:**
+   - Open [`IDE_Code/IDE_Code.ino`](IDE_Code/IDE_Code.ino) in the Arduino IDE.
+   - Select your board (**ESP32 Dev Module**) and COM port.
+   - Click **Upload**.
+2. **Open Dashboard:**
+   - Open your deployed Vercel dashboard (or `http://localhost:3000`) in Chrome or Edge.
+3. **Click "Connect ESP32":**
+   - In the top header or operational control bar, click **"Connect ESP32"**.
+   - Select your ESP32 device from the browser popup (e.g., `CP2102 USB to UART Bridge` or `CH340`).
+   - Click **Connect**.
+4. **Live Synchronization:**
+   - The status changes to 🟢 **ESP32: Live Hardware (115200)**.
+   - The Soil Moisture card displays the **real-time analog readings** from GPIO 34.
+   - When soil moisture drops below the threshold (default: 35%), the relay on GPIO 25 engages automatically.
+   - Clicking **"Manual Watering (5s)"** sends a serial command to turn ON the relay for 5 seconds.
+   - Click **"Pin 34: Soil • Pin 25: Relay"** to open the **Live Hardware Serial Monitor** and view raw serial logs or send custom commands.
+
+---
+
 ## 🛠 Project Structure
 
 ```
 stitch_leafy_smart_plant_dashboard/
-├── index.html            # Production dashboard (HTML5 + Tailwind CSS + Interactive JS)
-├── vercel.json           # Vercel configuration (security headers & clean URLs)
+├── index.html            # Production dashboard with Web Serial Hardware Bridge
+├── vercel.json           # Vercel configuration (outputDirectory & headers)
 ├── package.json          # Project metadata & local dev scripts
 ├── .gitignore            # Git ignore file
 ├── README.md             # Deployment & technical documentation
+├── IDE_Code/
+│   ├── IDE_Code.ino      # ESP32 USB Web Serial firmware (bidirectional commands)
+│   └── IDE_Code_WiFi.ino # Optional ESP32 Wi-Fi + MQTT firmware
 └── stitch_leafy_smart_plant_dashboard/
     ├── bio_telemetry_precision/
     │   └── DESIGN.md     # Design system tokens and style specifications
