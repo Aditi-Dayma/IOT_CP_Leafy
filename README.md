@@ -227,9 +227,68 @@ stitch_leafy_smart_plant_dashboard/
 
 ---
 
+## 👥 Team Contributions & Division of Work (3-Member Team)
+
+To ensure clear ownership, academic accountability, and comprehensive coverage across all IoT engineering domains, the project was systematically divided among the three team members:
+
+```
+┌───────────────────────────────────────────────────────────────────────────┐
+│                        LEAFY PROJECT ARCHITECTURE                         │
+├─────────────────────┬─────────────────────────────┬───────────────────────┤
+│    TEAM MEMBER 1    │        TEAM MEMBER 2        │     TEAM MEMBER 3     │
+│ Embedded Firmware & │    Web Application & Web    │ Agro-Intelligence &   │
+│   Hardware Safety   │       Serial Protocol       │     MLOps Systems     │
+├─────────────────────┼─────────────────────────────┼───────────────────────┤
+│ • ESP32 Pinout & ADC│ • Web Serial API Bridge     │ • Open-Meteo Live API │
+│ • Watchdog Cut-Off  │ • FIFO Serial Write Queue   │ • 3h Rain Lockout     │
+│ • Relay Polarity    │ • Configurable Scheduler UI │ • Seasonal Recovery   │
+│ • C++ Firmware Loop │ • Dual-Theme Night Vision   │ • Agronomic Database  │
+│ • Sensor Calibration│ • Vercel CI/CD Deployment   │ • SVG Trajectory Plot │
+└─────────────────────┴─────────────────────────────┴───────────────────────┘
+```
+
+### 🔹 Team Member 1: Embedded IoT Firmware, Hardware Circuitry & Edge Safety
+**Primary Role:** *Edge Hardware & Embedded Systems Engineer*  
+* **Circuit Schematic & Physical Wiring:** Designed the circuit interfacing the **ESP32-WROOM-32**, **Capacitive Soil Moisture Sensor v1.2**, **5V Optocoupled Relay Module**, and **5V Submersible DC Mini Pump**, ensuring proper signal isolation and power rail stability.
+* **Analog Calibration & Precision Mapping:** Calibrated the ESP32 12-bit ADC on **GPIO 34**, mapping raw analog values from dry air (`4095`) to water saturation (`1800`) into a continuous $0\text{--}100\%$ soil moisture metric.
+* **Firmware Architecture ([`IDE_Code.ino`](IDE_Code/IDE_Code.ino)):** Developed the modular C++ Arduino sketch featuring a non-blocking `millis()` sampling loop, serial ASCII command parser (`processCommand`), and structured JSON telemetry packet generation at 115200 baud.
+* **Hardware Safety Auto-Shutoff Watchdog:** Implemented `pumpShutoffTime = millis() + (pumpDurationSeconds * 1000UL)` ensuring the relay cuts off automatically after the set pulse (default 5s), eliminating pump burnout and overflow hazards.
+* **Relay Polarity Inversion & Safe Boot:** Engineered software-level polarity toggling (`relayActiveLow`), supporting both Active-LOW and Active-HIGH modules, with forced de-energization on boot.
+* **Wireless Broker Variant ([`IDE_Code_WiFi.ino`](IDE_Code_WiFi/IDE_Code_WiFi.ino)):** Authored the secondary sketch for optional Wi-Fi connectivity and MQTT broker transmission.
+* **Viva / Defense Focus:** ADC resolution and calibration, relay active-low vs. active-high optocoupler logic, hardware watchdog fail-safes, and non-blocking embedded timing.
+
+---
+
+### 🔹 Team Member 2: Web Application, Web Serial Protocol & Cloud Deployment
+**Primary Role:** *Full-Stack Web & IoT Interface Engineer*  
+* **Dashboard Frontend Architecture ([`index.html`](index.html)):** Architected the single-page application (SPA) using semantic HTML5, Tailwind CSS, and Material 3 design tokens with an interactive Day/Night greenhouse bioluminescent theme.
+* **Browser-to-Hardware Web Serial Bridge:** Integrated the modern Web Serial API, enabling driverless, zero-install USB communication directly between Chrome/Edge and the ESP32 edge node.
+* **FIFO Serial Command Queue (`serialWriteQueue`):** Solved the browser's `WritableStream` locking limitation by creating a Promise-chained FIFO queue with guaranteed `writer.releaseLock()` in `finally` blocks and 60ms UART buffer pacing.
+* **User-Centric Configurable Scheduler:** Designed and implemented the modal interface supporting both **Interval-based** cycles (`15m` to `12h`, custom units) and **Specific Daily Clock Times** (`HH:MM` tag manager) with persistent `localStorage` synchronization.
+* **Live Hardware Terminal Monitor:** Built the serial console modal allowing real-time monitoring of raw TX/RX data, one-click quick command shortcuts, and connection status detection.
+* **Cloud Infrastructure & CI/CD:** Configured production deployment on the **Vercel Edge Network** (`vercel.json`), managing static asset routing and automated Git push redeployments.
+* **Viva / Defense Focus:** Web Serial API implementation, browser stream locking and concurrency handling, frontend state persistence, responsive UI design, and cloud edge hosting.
+
+---
+
+### 🔹 Team Member 3: Agro-Meteorological Intelligence, Data Modeling & MLOps
+**Primary Role:** *Agro-Data Scientist & Microclimate Intelligence Engineer*  
+* **Open-Meteo Weather Radar Integration:** Integrated the Open-Meteo REST API with GPS and multi-city selector to pull live ambient temperature, humidity, WMO condition codes, and hourly precipitation forecasts.
+* **Weather-Aware Rain Lockout Engine:** Developed the predictive lockout algorithm that suppresses irrigation (`RAIN_LOCKOUT:1`) whenever rain probability $\ge 40\%$ or volume $\ge 0.5\text{ mm}$ within the upcoming 3 hours, conserving water and preventing root rot.
+* **Agronomic Crop & Season Database:** Built the agronomic lookup matrix covering 6 crop varieties (**Tomato, Spinach, Wheat, Rice, Maize, Cotton**) across **Kharif, Rabi, and Zaid** seasons, determining optimal moisture limits and 50% recovery targets.
+* **Missed-Rain Autonomous Recovery Engine:** Designed the closed-loop recovery logic: if rain was predicted in the previous cycle but failed to materialize, the system automatically irrigates until reaching exactly 50% of the crop's seasonal maximum moisture.
+* **Predictive Microclimate Visualization:** Created the responsive SVG cubic-bezier trajectory curves displaying 12-hour historical data and 6-hour forward forecast curves with critical threshold alert intersections.
+* **MLOps Governance Simulation:** Implemented the dashboard's machine learning simulation interface, incorporating FastAPI webhook retrain triggers (`POST /api/v1/retrain`), Evidently AI data drift audits, and MLflow Model Registry tracking.
+* **Viva / Defense Focus:** Agro-meteorological decision logic, rain lockout thresholds, agronomic moisture curves, predictive forecasting principles, and closed-loop agricultural automation.
+
+---
+
 ## 🎓 Academic Attribution & Project Context
 
 * **Course:** Internet of Things (IoT) Course Project (SEM-5)
 * **Project Name:** Leafy — Smart Plant Dashboard & Automated Microclimate Control
-* **Developer:** Aditi Dayma
+* **Team Members:**
+  1. **Aditi Dayma** — *Edge Hardware, Embedded Firmware & Safety Watchdog Lead*
+  2. **[Team Member 2 Name]** — *Web Architecture, Web Serial Protocol & Cloud Deployment Lead*
+  3. **[Team Member 3 Name]** — *Agro-Meteorological Intelligence, Agronomic Modeling & MLOps Lead*
 * **Repository:** [https://github.com/Aditi-Dayma/IOT_CP_Leafy.git](https://github.com/Aditi-Dayma/IOT_CP_Leafy.git)
